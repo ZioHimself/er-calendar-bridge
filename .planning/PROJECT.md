@@ -61,6 +61,7 @@ Sensitive calendar information never leaks to Google or Microsoft — untagged a
 
 ## Constraints
 
+- **Language**: TypeScript only — strict mode; no Python
 - **Security**: Read-only source access; calendar-scoped OAuth for Google/Microsoft; host treated as Sensitive-tier infrastructure
 - **Scale**: Minimum viable tooling — 7 people, 4 schedulers; avoid operational complexity disproportionate to team size
 - **Portability**: Host migration (laptop → server) must be a deployment change, not a rewrite
@@ -77,6 +78,7 @@ Sensitive calendar information never leaks to Google or Microsoft — untagged a
 | Default untagged → Internal busy-block | Fail-closed; untagged can only under-share, never leak | — Pending |
 | Assemble from maintained connectors | Recurrence reconciliation is error-prone to hand-write | — Pending |
 | Pilot: operator calendar only on laptop | Bounds interim risk; validates end-to-end before others | — Pending |
+| TypeScript (strict) over Python | Type safety across iCal/REST translation; team already uses TS (european-resolve) | — Pending |
 
 ## Evolution
 
