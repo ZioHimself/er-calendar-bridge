@@ -37,12 +37,12 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 4. Project structure separates `src/domain`, `src/adapters`, and `src/sync` per architecture layering
 5. `.env.example` documents required config keys without secrets
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Tooling configs, node-ical install, and three-layer source scaffold
+- [x] 01-01-PLAN.md — Tooling configs, node-ical install, and three-layer source scaffold
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -171,7 +171,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Project scaffold and test harness | 0/TBD | Not started | — |
+| 1. Project scaffold and test harness | 1/4 | In Progress|  |
 | 01.1. CI pipeline (INSERTED) | 0/TBD | Not started | — |
 | 2. Classification, washing, and iCal domain logic | 0/TBD | Not started | — |
 | 3. CalDAV read, UID store, and Google sync loop | 0/TBD | Not started | — |

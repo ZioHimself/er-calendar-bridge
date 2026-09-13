@@ -40,7 +40,7 @@ Requirements for the v1.0 pilot milestone. Each maps to one roadmap phase.
 
 ### Test Harness
 
-- [ ] **TEST-01**: vitest test runner with strict TypeScript
+- [x] **TEST-01**: vitest test runner with strict TypeScript
 - [ ] **TEST-02**: iCalendar fixture library covering all classification tiers and untagged events
 - [ ] **TEST-03**: Recurrence-exception fixtures as explicit high-risk test targets
 - [ ] **TEST-04**: Domain logic (classify, wash) covered by pure unit tests — no network
@@ -51,7 +51,7 @@ Requirements for the v1.0 pilot milestone. Each maps to one roadmap phase.
 - [ ] **OPS-01**: Single-account pilot configuration (operator calendar only)
 - [ ] **OPS-02**: Host migration (laptop → server) is a deployment change, not a rewrite
 - [ ] **OPS-03**: Operator can see sync status, last success per account, and withheld events
-- [ ] **OPS-04**: Minimum viable tooling — no disproportionate operational complexity
+- [x] **OPS-04**: Minimum viable tooling — no disproportionate operational complexity
 
 ## v2 Requirements
 
@@ -103,7 +103,7 @@ Deferred post-pilot.
 | SEC-03 | Phase 4 | Pending |
 | SEC-04 | Phase 3, 5 | Pending |
 | SEC-05 | Phase 5 | Pending |
-| TEST-01 | Phase 1 | Pending |
+| TEST-01 | Phase 1 | Complete |
 | TEST-02 | Phase 1 | Pending |
 | TEST-03 | Phase 1 | Pending |
 | TEST-04 | Phase 2 | Pending |
@@ -111,7 +111,7 @@ Deferred post-pilot.
 | OPS-01 | Phase 3, 5 | Pending |
 | OPS-02 | Phase 5 | Pending |
 | OPS-03 | Phase 3, 4 | Pending |
-| OPS-04 | Phase 1, 01.1, 5 | Pending |
+| OPS-04 | Phase 1, 01.1, 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 32 total
