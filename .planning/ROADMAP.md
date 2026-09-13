@@ -14,7 +14,7 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 
 **Execution order:** 1 → 01.1 → 2 → 3 → 4 → 5
 
-- [ ] **Phase 1: Project scaffold and test harness** — TypeScript strict project, vitest, iCal fixture library
+- [x] **Phase 1: Project scaffold and test harness** — TypeScript strict project, vitest, iCal fixture library (completed 2026-09-13)
 - [ ] **Phase 01.1: CI pipeline (INSERTED)** — GitHub Actions for test, lint, and typecheck
 - [ ] **Phase 2: Classification, washing, and iCal domain logic** — Fail-closed tier rules and busy-block construction
 - [ ] **Phase 3: CalDAV read, UID store, and Google sync loop** — mailbox.org read, SQLite mapping, Google pilot sync
@@ -37,7 +37,7 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 4. Project structure separates `src/domain`, `src/adapters`, and `src/sync` per architecture layering
 5. `.env.example` documents required config keys without secrets
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**
@@ -54,7 +54,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 01-04-PLAN.md — Fixture smoke tests and full validation gate
+- [x] 01-04-PLAN.md — Fixture smoke tests and full validation gate
 
 ### Phase 01.1: CI pipeline (INSERTED)
 
@@ -171,7 +171,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Project scaffold and test harness | 3/4 | In Progress|  |
+| 1. Project scaffold and test harness | 4/4 | Complete   | 2026-09-13 |
 | 01.1. CI pipeline (INSERTED) | 0/TBD | Not started | — |
 | 2. Classification, washing, and iCal domain logic | 0/TBD | Not started | — |
 | 3. CalDAV read, UID store, and Google sync loop | 0/TBD | Not started | — |
