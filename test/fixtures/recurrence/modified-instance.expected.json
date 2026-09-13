@@ -1,0 +1,7 @@
+{
+  "uid": "standup@er.example",
+  "categories": ["ER-INTERNAL"],
+  "tier": "internal",
+  "propagation": "busy",
+  "washed": null
+}
