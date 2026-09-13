@@ -21,6 +21,14 @@ function asString(value: unknown): string | undefined {
 
 export function parseIcsToSourceEvent(ics: string): SourceEvent {
   const vevent = findFirstVEvent(ical.parseICS(ics));
+
+  if (!vevent.uid) {
+    throw new Error('VEVENT missing required UID');
+  }
+  if (!vevent.start) {
+    throw new Error('VEVENT missing required DTSTART');
+  }
+
   return {
     uid: vevent.uid,
     categories: vevent.categories ?? [],
