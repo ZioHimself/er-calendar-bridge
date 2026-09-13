@@ -75,7 +75,7 @@ Each task was committed atomically:
 1. **Task 1: Create node-ical adapter and test helpers** - `c9e75ff` (feat)
 2. **Task 2: Create classification-tier fixture pairs** - `ef2f894` (feat)
 
-**Plan metadata:** pending (docs: complete plan)
+**Plan metadata:** `2398b99` (docs: complete plan)
 
 ## Files Created/Modified
 
