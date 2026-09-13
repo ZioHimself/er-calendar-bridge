@@ -1,1 +1,5 @@
-export { parseIcsToSourceEvent, getCategories } from './parse-source-event.js';
+export {
+  parseIcsToSourceEvent,
+  parseIcsToSourceEvents,
+  getCategories,
+} from './parse-source-event.js';
