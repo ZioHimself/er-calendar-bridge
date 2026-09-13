@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: Google-only pilot
 status: executing
 stopped_at: Phase 01.1 context gathered
-last_updated: "2026-09-13T21:33:43.377Z"
-last_activity: 2026-09-13 -- Phase 01.1 planning complete
+last_updated: "2026-09-13T21:36:06.813Z"
+last_activity: 2026-09-13 -- Phase 01.1 execution started
 progress:
   total_phases: 7
   completed_phases: 1
@@ -22,14 +22,14 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 
 **Core value:** Sensitive calendar information never leaks to Google or Microsoft — untagged and internal events propagate only as busy-blocks; sensitive events are withheld entirely.
 
-**Current focus:** Phase 01.1 — ci pipeline
+**Current focus:** Phase 01.1 — ci-pipeline
 
 ## Current Position
 
-Phase: 01.1
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-09-13 -- Phase 01.1 planning complete
+Phase: 01.1 (ci-pipeline) — EXECUTING
+Plan: 1 of 3
+Status: Executing Phase 01.1
+Last activity: 2026-09-13 -- Phase 01.1 execution started
 
 Progress: [██░░░░░░░░] 14%
 

@@ -18,7 +18,7 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 **v1.0 milestone completes at Phase 5.**
 
 - [ ] **Phase 1: Project scaffold and test harness** — TypeScript strict project, vitest, iCal fixture library
-- [ ] **Phase 01.1: CI pipeline (INSERTED)** — GitHub Actions for test, lint, and typecheck
+- [x] **Phase 01.1: CI pipeline (INSERTED)** — GitHub Actions for test, lint, and typecheck (completed 2026-09-13)
 - [ ] **Phase 2: Classification, washing, and iCal domain logic** — Fail-closed tier rules and busy-block construction
 - [ ] **Phase 3: CalDAV read, UID store, and Google sync loop** — mailbox.org read, SQLite mapping, Google pilot sync
 - [ ] **Phase 4: Withhold notifications and audit log** — SMTP owner alerts, de-duplication, IT audit record
@@ -76,18 +76,18 @@ Plans:
 4. CI runtime is proportionate for a 7-person team (no disproportionate infra)
 5. Workflow file is structured so a Docker build job can be added in Phase 5 without restructuring
 
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 Plans:
 
 **Wave 1** *(parallel — no file overlap)*
 
-- [ ] 01.1-01-PLAN.md — tsconfig.test.json and dual tsc typecheck script (D-04–D-07)
-- [ ] 01.1-02-PLAN.md — GitHub Actions CI workflow with four parallel jobs (D-08–D-14, TEST-05)
+- [x] 01.1-01-PLAN.md — tsconfig.test.json and dual tsc typecheck script (D-04–D-07)
+- [x] 01.1-02-PLAN.md — GitHub Actions CI workflow with four parallel jobs (D-08–D-14, TEST-05)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01.1-03-PLAN.md — Trunk-based README docs and Phase 01.1 validation gate (D-15)
+- [x] 01.1-03-PLAN.md — Trunk-based README docs and Phase 01.1 validation gate (D-15)
 
 ### Phase 2: Classification, washing, and iCal domain logic
 
@@ -204,7 +204,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Project scaffold and test harness | 4/4 | Complete | 2026-09-13 |
-| 01.1. CI pipeline (INSERTED) | 0/3 | Not started | — |
+| 01.1. CI pipeline (INSERTED) | 3/3 | Complete   | 2026-09-13 |
 | 2. Classification, washing, and iCal domain logic | 0/TBD | Not started | — |
 | 3. CalDAV read, UID store, and Google sync loop | 0/TBD | Not started | — |
 | 4. Withhold notifications and audit log | 0/TBD | Not started | — |
