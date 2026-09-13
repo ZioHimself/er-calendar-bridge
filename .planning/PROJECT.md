@@ -12,7 +12,9 @@ Sensitive calendar information never leaks to Google or Microsoft — untagged a
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Strict TypeScript scaffold with vitest, lint, typecheck, and build scripts — Validated in Phase 1
+- [x] Fixture-driven test harness for iCalendar samples including recurrence exceptions — Validated in Phase 1
+- [x] `.env.example` config template without secrets — Validated in Phase 1
 
 ### Active
 
@@ -97,5 +99,9 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
+## Current State
+
+Phase 1 complete — strict TypeScript ESM scaffold, node-ical adapter, fixture library (7 tier/recurrence pairs), and passing smoke test suite. Ready for Phase 01.1 (CI pipeline).
+
 ---
-*Last updated: 2026-09-10 after initialization*
+*Last updated: 2026-09-13 after Phase 1 completion*
