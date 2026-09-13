@@ -70,7 +70,7 @@ Each task was committed atomically:
 1. **Task 1: Create tooling configs and install dependencies** - `c70f8fc` (chore)
 2. **Task 2: Scaffold source layout, domain types, and env template** - `01c5aa9` (feat)
 
-**Plan metadata:** pending (docs: complete plan)
+**Plan metadata:** `d27aa42` (docs: complete plan)
 
 ## Files Created/Modified
 
