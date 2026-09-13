@@ -8,9 +8,11 @@
 
 Phase 1 is a greenfield scaffold: no application code exists yet beyond planning artifacts. The locked decisions in `01-CONTEXT.md` define a precise deliverable — strict TypeScript ESM project with three-layer `src/` layout, vitest unit tests, eslint-only linting (no Prettier), and a fixture library of raw `.ics` files with `.expected.json` sidecars. Business logic (classify, wash, sync) is explicitly out of scope; the smoke test only proves the harness parses fixtures and surfaces UID/CATEGORIES.
 
-The standard stack aligns with `.planning/research/STACK.md`: Node 24 LTS, TypeScript 5.x strict, vitest 5.x, `@pipobscure/ical` for parsing, and `typescript-eslint` flat config. Vitest 5 requires Node `^22.12.0 || ^24.0.0 || >=26.0.0` [CITED: vitest.dev/guide] — compatible with the locked `engines.node: "24.x"` choice. `@pipobscure/ical` is pure ESM, requires Node ≥22, and exposes `parse(src): Calendar` with typed `Event` objects including `uid`, `categories`, `rrules`, and `recurrenceId` [CITED: npmjs.com/package/@pipobscure/ical].
+The standard stack aligns with `.planning/research/STACK.md`: Node 24 LTS, TypeScript 5.x strict, vitest 5.x, `node-ical@0.27.2` behind `src/adapters/ical/`, and `typescript-eslint` flat config. Vitest 5 requires Node `^22.12.0 || ^24.0.0 || >=26.0.0` [CITED: vitest.dev/guide] — compatible with the locked `engines.node: "24.x"` choice. `node-ical` is pure ESM, ships `node-ical.d.ts`, and exposes `parseICS(src): CalendarResponse` with `VEvent` objects including `uid`, `categories`, `rrule`, and `recurrenceid` [CITED: github.com/jens-maus/node-ical].
 
-**Primary recommendation:** Bootstrap with `"type": "module"`, `module`/`moduleResolution: "NodeNext"`, vitest `environment: 'node'`, fixture-driven smoke tests loading one `.ics` per tier plus three recurrence-exception files, and eslint flat config using `typescript-eslint` `recommended` preset (not typed linting yet — keeps OPS-04 proportionate while `tsc --strict` enforces type safety).
+**Stack pivot (2026-09-13):** Replaced `@pipobscure/ical` (low npm adoption) with `node-ical` + strict adapter mapping to domain `SourceEvent`. Type safety enforced at adapter boundary per D-02/D-15 — domain and tests never import `node-ical` directly.
+
+**Primary recommendation:** Bootstrap with `"type": "module"`, `module`/`moduleResolution: "NodeNext"`, vitest `environment: 'node'`, `src/adapters/ical/parse-source-event.ts` as sole `node-ical` import site, fixture-driven smoke tests loading one `.ics` per tier plus three recurrence-exception files, and eslint flat config using `typescript-eslint` `recommended` preset (not typed linting yet — keeps OPS-04 proportionate while `tsc --strict` enforces type safety).
 
 <user_constraints>
 ## User Constraints (from CONTEXT.md)
@@ -38,7 +40,7 @@ The standard stack aligns with `.planning/research/STACK.md`: Node 24 LTS, TypeS
 #### Test Harness Depth
 - **D-13:** Unit-first test pyramid. Phase 1 establishes vitest unit tests against `.ics` fixtures. Integration tests added in Phase 3 (mocked CalDAV/API). No E2E until pilot.
 - **D-14:** Acceptance tests enter in Phase 3 — sync loop against fixture CalDAV responses + mocked Google API. No live provider credentials (aligns with TEST-05).
-- **D-15:** Shared test helpers in `test/helpers/`: `loadFixture()`, `parseIcs()` (via `@pipobscure/ical`), `assertTier()` / sidecar comparison against `.expected.json`.
+- **D-15:** Shared test helpers in `test/helpers/`: `loadFixture()`, `parseIcs()` (via `src/adapters/ical/` node-ical adapter → `SourceEvent`), `assertTier()` / sidecar comparison against `.expected.json`.
 - **D-16:** Smoke test loads one `.ics` fixture per tier, parses successfully, asserts UID and CATEGORIES are present. Proves harness is wired — not a trivial hello-world.
 
 ### Claude's Discretion
@@ -70,7 +72,7 @@ None — all discussed areas had explicit user choices.
 |------------|-------------|----------------|-----------|
 | TypeScript build & typecheck | API / Backend (tooling) | — | `tsc` compiles `src/` to `dist/`; strict mode enforced at compile time |
 | Unit test execution | API / Backend (tooling) | — | vitest runs in Node; no browser/DOM needed |
-| iCal fixture parsing (harness) | API / Backend (test infra) | — | `parse()` from `@pipobscure/ical` in `test/helpers/`; domain parser module comes Phase 2 |
+| iCal fixture parsing (harness) | API / Backend (adapter) | — | `parseIcsToSourceEvent()` in `src/adapters/ical/`; test helpers wrap adapter; classify/wash in Phase 2 |
 | Fixture storage | Database / Storage (files) | — | Raw `.ics` files on disk; no DB in Phase 1 |
 | Lint enforcement | API / Backend (tooling) | — | eslint flat config at repo root |
 | Config key documentation | API / Backend (config) | — | `.env.example` documents future runtime keys; no secrets loader yet |
@@ -86,7 +88,7 @@ None — all discussed areas had explicit user choices.
 | Node.js | 24.x LTS | Runtime | Locked D-09; Active LTS since Oct 2025, supported to Apr 2028 [CITED: github.com/nodejs/Release] |
 | TypeScript | 5.9.3 | Language | STACK.md specifies 5.x strict; latest 5.x verified via `npm view typescript@5` |
 | vitest | 5.0.0 | Test runner | STACK.md; native ESM, Node 24 support, faster than Jest for TS [CITED: vitest.dev/guide] |
-| @pipobscure/ical | 1.0.0 | iCal parse | STACK.md; TypeScript-native RFC 5545 parser; `parse()` → typed `Calendar` [CITED: npmjs.com/package/@pipobscure/ical] |
+| node-ical | 0.27.2 | iCal parse (adapter) | STACK.md; battle-tested RFC 5545 parser; `parseICS()` → `CalendarResponse` mapped to `SourceEvent` [CITED: github.com/jens-maus/node-ical] |
 
 ### Supporting
 
@@ -102,7 +104,7 @@ None — all discussed areas had explicit user choices.
 
 | Instead of | Could Use | Tradeoff |
 |------------|-----------|----------|
-| @pipobscure/ical | node-ical | node-ical has more downloads but weaker native TS; STACK.md already chose @pipobscure/ical |
+| node-ical + adapter | @pipobscure/ical | node-ical chosen for adoption/maturity; `SourceEvent` adapter provides strict boundary (stack pivot 2026-09-13) |
 | vitest | Jest | Jest ESM/TS setup more painful; STACK.md and team precedent (european-resolve) favor vitest |
 | eslint recommended | strictTypeChecked | Typed linting adds config complexity; defer to Phase 01.1 if CI needs it (OPS-04) |
 | TypeScript 5.9.x | TypeScript 7.0.2 | TS 7 is latest on npm but STACK.md says 5.x; stay on 5.x unless user revises stack |
@@ -110,7 +112,7 @@ None — all discussed areas had explicit user choices.
 **Installation (Phase 1 scope only — no CalDAV/API deps yet):**
 
 ```bash
-npm install @pipobscure/ical
+npm install node-ical@0.27.2
 
 npm install -D typescript@5.9.3 vitest@5.0.0 tsx@4.23.13 \
   eslint@10.10.0 @eslint/js@10.0.1 typescript-eslint@8.70.0 \
@@ -123,7 +125,7 @@ npm install -D typescript@5.9.3 vitest@5.0.0 tsx@4.23.13 \
 |---------|-----------------|
 | typescript@5 | 5.9.3 |
 | vitest | 5.0.0 |
-| @pipobscure/ical | 1.0.0 |
+| node-ical | 0.27.2 |
 | eslint | 10.10.0 |
 | typescript-eslint | 8.70.0 |
 | tsx | 4.23.13 |
@@ -131,23 +133,22 @@ npm install -D typescript@5.9.3 vitest@5.0.0 tsx@4.23.13 \
 
 ## Package Legitimacy Audit
 
-> slopcheck was unavailable at research time (install blocked). All packages below are tagged `[ASSUMED]` — planner must gate each install behind a `checkpoint:human-verify` task.
+> Updated 2026-09-13 after stack pivot to `node-ical`. Runtime dependency is mainstream; no human checkpoint required before install.
 
-| Package | Registry | Age | Downloads | Source Repo | slopcheck | Disposition |
-|---------|----------|-----|-----------|-------------|-----------|-------------|
-| typescript | npm | 11+ yrs | ~90M/wk | github.com/microsoft/TypeScript | unavailable | `[ASSUMED]` — verify before install |
-| vitest | npm | 3+ yrs | ~25M/wk | github.com/vitest-dev/vitest | unavailable | `[ASSUMED]` — verify before install |
-| @pipobscure/ical | npm | ~7 mo | ~6/wk | github.com/pipobscure/ical | unavailable | `[ASSUMED]` — **low downloads; deliberate STACK.md choice; verify repo before install** |
-| eslint | npm | 12+ yrs | ~60M/wk | github.com/eslint/eslint | unavailable | `[ASSUMED]` — verify before install |
-| typescript-eslint | npm | 5+ yrs | ~30M/wk | github.com/typescript-eslint/typescript-eslint | unavailable | `[ASSUMED]` — verify before install |
-| tsx | npm | 2+ yrs | ~15M/wk | github.com/privatenumber/tsx | unavailable | `[ASSUMED]` — verify before install |
-| @types/node | npm | 10+ yrs | ~80M/wk | github.com/DefinitelyTyped/DefinitelyTyped | unavailable | `[ASSUMED]` — verify before install |
-| @eslint/js | npm | 2+ yrs | ~40M/wk | github.com/eslint/eslint | unavailable | `[ASSUMED]` — verify before install |
+| Package | Registry | Age | Downloads | Source Repo | Disposition |
+|---------|----------|-----|-----------|-------------|-------------|
+| typescript | npm | 11+ yrs | ~90M/wk | github.com/microsoft/TypeScript | ✅ mainstream |
+| vitest | npm | 3+ yrs | ~25M/wk | github.com/vitest-dev/vitest | ✅ mainstream |
+| node-ical | npm | 10+ yrs | ~1M+/wk | github.com/jens-maus/node-ical | ✅ mainstream — sole Phase 1 runtime dep |
+| eslint | npm | 12+ yrs | ~60M/wk | github.com/eslint/eslint | ✅ mainstream |
+| typescript-eslint | npm | 5+ yrs | ~30M/wk | github.com/typescript-eslint/typescript-eslint | ✅ mainstream |
+| tsx | npm | 2+ yrs | ~15M/wk | github.com/privatenumber/tsx | ✅ mainstream |
+| @types/node | npm | 10+ yrs | ~80M/wk | github.com/DefinitelyTyped/DefinitelyTyped | ✅ mainstream |
+| @eslint/js | npm | 2+ yrs | ~40M/wk | github.com/eslint/eslint | ✅ mainstream |
 
-**Packages removed due to slopcheck [SLOP] verdict:** none (slopcheck not run)
-**Packages flagged as suspicious [SUS]:** `@pipobscure/ical` — low weekly downloads (6/wk) but has authoritative source repo and is the locked stack choice from project research; human should confirm package author (`pipobscure`) matches expected maintainer.
+**Previously flagged:** `@pipobscure/ical` — removed from stack (low adoption); replaced by `node-ical` + adapter.
 
-**Postinstall scripts:** None detected on recommended packages (`npm view <pkg> scripts.postinstall` returned empty).
+**Postinstall scripts:** None on `node-ical` publish scripts; pin exact version in `package-lock.json`.
 
 ## Architecture Patterns
 
@@ -167,10 +168,11 @@ npm install -D typescript@5.9.3 vitest@5.0.0 tsx@4.23.13 \
 │                    test/helpers/parseIcs()                       │
 │                              │                                   │
 │                              ▼                                   │
-│                    @pipobscure/ical parse()                      │
+│              src/adapters/ical/parse-source-event.ts           │
+│                    (node-ical → SourceEvent)                     │
 │                              │                                   │
 │                              ▼                                   │
-│              assert UID + CATEGORIES present                     │
+│              assert UID + CATEGORIES on SourceEvent              │
 │              (sidecar .expected.json loaded but                  │
 │               full comparison deferred to Phase 2)               │
 │                                                                  │
@@ -234,7 +236,7 @@ er-calendar-bridge/
 
 ### Pattern 1: ESM + NodeNext TypeScript
 
-**What:** Pure ESM project aligned with `@pipobscure/ical` and Node 24 native module resolution.
+**What:** Pure ESM project aligned with `node-ical` and Node 24 native module resolution.
 **When to use:** Always — locked by stack and library requirements.
 
 ```json
@@ -269,7 +271,7 @@ er-calendar-bridge/
 }
 ```
 
-Source: [CITED: npmjs.com/package/@pipobscure/ical] (pure ESM, Node ≥22); [ASSUMED] NodeNext is standard for Node ESM TypeScript projects.
+Source: [CITED: github.com/jens-maus/node-ical] (pure ESM, dual CJS/ESM export); NodeNext is standard for Node ESM TypeScript projects.
 
 ### Pattern 2: Vitest Node Test Config
 
@@ -374,15 +376,16 @@ export default defineConfig(
 - **Pre-scaffolding `domain/ical/`, `adapters/caldav/` subfolders:** D-01 says create on demand; only `.gitkeep` at layer roots.
 - **Hello-world-only smoke test:** D-16 requires fixture parsing with UID/CATEGORIES assertions.
 - **Installing CalDAV/API deps in Phase 1:** tsdav, googleapis, better-sqlite3 etc. belong in later phases; keeps `package-lock.json` lean.
-- **CommonJS `require()`:** Conflicts with `@pipobscure/ical` pure ESM requirement.
-- **Hand-rolled iCal parser in test helpers:** Use `parse()` from `@pipobscure/ical` per D-15.
+- **CommonJS `require()`:** Use ESM `import` — project is `"type": "module"`.
+- **Hand-rolled iCal parser:** Use `node-ical` inside `src/adapters/ical/` only per D-15.
+- **Direct `node-ical` imports in domain/tests:** Confined to adapter; use `SourceEvent` everywhere else.
 - **Real PII in fixtures:** Use synthetic UIDs, names, and emails (`@er.example`).
 
 ## Don't Hand-Roll
 
 | Problem | Don't Build | Use Instead | Why |
 |---------|-------------|-------------|-----|
-| iCal parsing | Custom VEVENT/CATEGORIES parser | `@pipobscure/ical` `parse()` | RFC 5545 edge cases (folding, TZID, EXDATE, RECURRENCE-ID) are subtle [CITED: PITFALLS.md #1, #9] |
+| iCal parsing | Custom VEVENT/CATEGORIES parser | `node-ical` `parseICS()` via adapter | RFC 5545 edge cases (folding, TZID, EXDATE, RECURRENCE-ID) are subtle [CITED: PITFALLS.md #1, #9] |
 | Test runner | Custom assert framework | vitest | ESM-native, fast, team precedent |
 | Type checking | eslint-only without tsc | `tsc --noEmit` script | Strict types enforced at compile time per PROJECT.md |
 | RRULE expansion in Phase 1 | Full recurrence engine | Fixture files only; `@martinhipp/rrule` deferred to Phase 2/3 | D-07 specifies minimal fixture set, not expansion logic |
@@ -406,12 +409,12 @@ export default defineConfig(
 **How to avoid:** Either add a `tsconfig.test.json` that extends base and includes `test/`, or use vitest's built-in typecheck (`vitest --typecheck`) as supplement. Minimum viable: separate `tsconfig.json` (src only) + ensure test imports use paths that resolve.
 **Warning signs:** IDE shows errors in `test/` but CI typecheck is green.
 
-### Pitfall 3: @pipobscure/ical Categories Type Shape
+### Pitfall 3: node-ical ParameterValue Fields
 
-**What goes wrong:** Smoke test asserts `CATEGORIES` as string but parser returns `ICalValue[]`.
-**Why it happens:** `@pipobscure/ical` uses structured value types, not plain strings.
-**How to avoid:** Helper normalizes categories: `event.categories.map(c => typeof c === 'string' ? c : String(c))` or check `event.getValues('CATEGORIES')`. Read actual parsed shape in first smoke test before locking assertions.
-**Warning signs:** `expect(categories).toContain('ER-PUBLIC')` fails despite fixture having the tag.
+**What goes wrong:** Smoke test reads `summary`/`description` as plain string but node-ical returns `ParameterValue` objects.
+**Why it happens:** node-ical types `summary`, `description`, `location` as `ParameterValue` (string or `{ val, params }`).
+**How to avoid:** Adapter `asString()` normalizes `ParameterValue` before mapping to `SourceEvent`. Tests use `SourceEvent.categories` (already `string[]`) via `getCategories()`.
+**Warning signs:** Type errors when assigning `vevent.summary` directly to `SourceEvent.summary`.
 
 ### Pitfall 4: Recurrence Fixture TZID Mismatch
 
@@ -468,27 +471,66 @@ export interface FixtureExpected {
 }
 ```
 
-### parseIcs() Helper
+### parse-source-event.ts Adapter (sole node-ical import site)
+
+```typescript
+// src/adapters/ical/parse-source-event.ts
+import ical from 'node-ical';
+import type { CalendarResponse, VEvent } from 'node-ical';
+import type { SourceEvent } from '../../domain/types/index.js';
+
+function findFirstVEvent(data: CalendarResponse): VEvent {
+  for (const item of Object.values(data)) {
+    if (item && typeof item === 'object' && item.type === 'VEVENT') {
+      return item;
+    }
+  }
+  throw new Error('No VEVENT found in fixture');
+}
+
+function asString(value: unknown): string | undefined {
+  if (typeof value === 'string') return value;
+  if (value && typeof value === 'object' && 'val' in value) {
+    return String((value as { val: unknown }).val);
+  }
+  return undefined;
+}
+
+export function parseIcsToSourceEvent(ics: string): SourceEvent {
+  const vevent = findFirstVEvent(ical.parseICS(ics));
+  return {
+    uid: vevent.uid,
+    categories: vevent.categories ?? [],
+    summary: asString(vevent.summary),
+    description: asString(vevent.description),
+    location: asString(vevent.location),
+    start: vevent.start,
+    end: vevent.end,
+    recurrenceId: vevent.recurrenceid,
+    isRecurring: Boolean(vevent.rrule),
+  };
+}
+
+export function getCategories(event: SourceEvent): string[] {
+  return event.categories;
+}
+```
+
+### parseIcs() Test Helper (thin wrapper)
 
 ```typescript
 // test/helpers/parse-ics.ts
-// Source: [CITED: npmjs.com/package/@pipobscure/ical]
-import { parse, type Event } from '@pipobscure/ical';
+import {
+  parseIcsToSourceEvent,
+  getCategories,
+} from '../../src/adapters/ical/index.js';
+import type { SourceEvent } from '../../src/domain/types/index.js';
 
-export function parseIcs(ics: string): Event {
-  const cal = parse(ics);
-  const event = cal.events[0];
-  if (!event) {
-    throw new Error('No VEVENT found in fixture');
-  }
-  return event;
+export function parseIcs(ics: string): SourceEvent {
+  return parseIcsToSourceEvent(ics);
 }
 
-export function getCategories(event: Event): string[] {
-  return event.categories
-    .map((c) => (typeof c === 'string' ? c : String(c)))
-    .filter(Boolean);
-}
+export { getCategories };
 ```
 
 ### Smoke Test (D-16)
@@ -586,8 +628,8 @@ Key names are `[ASSUMED]` — planner should cross-check against `it-strategy/er
 | `.eslintrc.*` config | ESLint flat config (`eslint.config.mjs`) | ESLint 9+ (2024) | Must use `defineConfig` + `typescript-eslint` helper [CITED: typescript-eslint.io/getting-started] |
 | `parserOptions.project` | `parserOptions.projectService` | typescript-eslint 8.0 (2024) | Faster typed linting; defer to Phase 01.1 |
 | Jest + ts-jest | vitest 5 + native ESM | vitest 5 (2025-2026) | Node 20 dropped; requires Node 22.12+ [CITED: vitest.dev/guide] |
-| CommonJS default | ESM `"type": "module"` | Node ecosystem norm | Required by @pipobscure/ical |
-| node-ical | @pipobscure/ical | STACK.md 2026-09-11 | TypeScript-native; project-locked choice |
+| CommonJS default | ESM `"type": "module"` | Node ecosystem norm | node-ical supports ESM import |
+| node-ical + adapter | @pipobscure/ical | Stack pivot 2026-09-13 | Adoption + strict SourceEvent boundary |
 
 **Deprecated/outdated:**
 - **ESLint legacy `.eslintrc`:** Removed in ESLint 9; use flat config.
@@ -600,7 +642,7 @@ Key names are `[ASSUMED]` — planner should cross-check against `it-strategy/er
 | A1 | `.env.example` key names (MAILBOX_*, GOOGLE_*, etc.) | Code Examples | Phase 3 config loader needs rename |
 | A2 | `module: NodeNext` is correct tsconfig for this project | Pattern 1 | Import path issues if bundler resolution preferred |
 | A3 | Phase 1 eslint uses `recommended` not `strictTypeChecked` | Pattern 5 | May need tightening in Phase 01.1 |
-| A4 | `@pipobscure/ical` `event.categories` normalization approach | Pitfall 3 | Smoke test assertions may need adjustment after first parse |
+| A4 | node-ical `ParameterValue` normalization in adapter | Pitfall 3 | Adapter `asString()` handles summary/description/location |
 | A5 | All package versions marked `[ASSUMED]` due to slopcheck unavailability | Package Legitimacy Audit | Planner must human-verify each install |
 | A6 | TypeScript 5.9.3 over 7.0.2 | Standard Stack | STACK.md says 5.x; TS 7 may be viable but unverified for this project |
 
@@ -696,7 +738,7 @@ Key names are `[ASSUMED]` — planner should cross-check against `it-strategy/er
 |---------|--------|---------------------|
 | Secrets committed to git | Information Disclosure | `.gitignore` `.env`; `.env.example` placeholders only; no real credentials in fixtures |
 | PII in test fixtures | Information Disclosure | Synthetic data only (`@er.example` domains, fake names) |
-| Supply-chain package risk | Tampering | Package legitimacy audit; human-verify `@pipobscure/ical` low-download package |
+| Supply-chain package risk | Tampering | Pin `node-ical@0.27.2` in package-lock.json; adapter confines parser dependency |
 | Misconfigured strict mode bypass | Elevation | `strict: true` in tsconfig; `tsc --noEmit` in CI (Phase 01.1) |
 
 ## Project Constraints (from CLAUDE.md)
@@ -713,7 +755,7 @@ No `CLAUDE.md` present in repository. Applicable constraints sourced from `.plan
 
 ### Primary (HIGH confidence)
 
-- [npmjs.com/package/@pipobscure/ical](https://www.npmjs.com/package/@pipobscure/ical) — API (`parse`, `Event.categories`, `recurrenceId`, `rrules`), ESM/Node requirements
+- [github.com/jens-maus/node-ical](https://github.com/jens-maus/node-ical) — API (`parseICS`, `VEvent`, `categories`, `rrule`, `recurrenceid`), ESM/Node requirements
 - [vitest.dev/guide](https://vitest.dev/guide/) — installation, Node engine requirements, config
 - [typescript-eslint.io/getting-started](https://typescript-eslint.io/getting-started/) — flat config setup
 - [github.com/nodejs/Release](https://github.com/nodejs/Release/blob/main/README.md) — Node 24 LTS schedule
@@ -737,7 +779,7 @@ No `CLAUDE.md` present in repository. Applicable constraints sourced from `.plan
 **Confidence breakdown:**
 - Standard stack: HIGH — locked in CONTEXT.md and STACK.md, versions verified via npm
 - Architecture: HIGH — greenfield with explicit layout decisions; no legacy code conflicts
-- Pitfalls: MEDIUM — recurrence fixture patterns verified against RFC 5545 refs; `@pipobscure/ical` category shape needs first-parse validation
+- Pitfalls: MEDIUM — recurrence fixture patterns verified against RFC 5545 refs; adapter `ParameterValue` normalization validated in smoke tests
 
 **Research date:** 2026-09-13
 **Valid until:** 2026-10-13 (30 days — stable toolchain domain)

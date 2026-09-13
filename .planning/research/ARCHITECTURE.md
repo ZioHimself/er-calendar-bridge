@@ -31,7 +31,7 @@
 | Module | Responsibility | Depends on |
 |--------|----------------|------------|
 | `caldav/` | Fetch calendars/objects, ETag tracking | tsdav |
-| `ical/` | Parse VEVENT, extract CATEGORIES/UID/times | @pipobscure/ical |
+| `adapters/ical/` | Parse VEVENT via node-ical → `SourceEvent` | node-ical (adapter boundary only) |
 | `classify/` | Map CATEGORIES → `Public \| Internal \| Sensitive` | pure TS |
 | `wash/` | Build outbound busy-block or full event | classify types |
 | `writers/google/` | Create/update/delete via Calendar API | googleapis |

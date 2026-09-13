@@ -17,7 +17,7 @@ Python is excluded: strict TypeScript gives compile-time safety across iCal pars
 
 - **Node 24 LTS + TypeScript strict** — runtime and language
 - **tsdav** — CalDAV read (verify sync-collection on mailbox.org in spike)
-- **@pipobscure/ical** — parse VEVENT / CATEGORIES
+- **node-ical** (via `src/adapters/ical/`) — parse VEVENT → `SourceEvent`
 - **googleapis + @microsoft/microsoft-graph-client** — write targets
 - **better-sqlite3** — per-container UID mapping
 - **zod + pino + nodemailer** — config, observability, withhold notifications

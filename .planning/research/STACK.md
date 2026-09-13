@@ -16,7 +16,7 @@
 | tsdav | 2.3.x | CalDAV read | Native TS, maintained, Basic auth for mailbox.org app passwords |
 | googleapis | latest | Google Calendar write | Official client; `calendar_v3` types built-in |
 | @microsoft/microsoft-graph-client | 3.0.x | Graph write | Official client; pairs with `@microsoft/microsoft-graph-types` |
-| @pipobscure/ical | latest | iCal parse/serialize | TypeScript-native RFC 5545 parser; tolerant of provider quirks |
+| node-ical | 0.27.x | iCal parse (via adapter) | Battle-tested RFC 5545 parser; strict `SourceEvent` mapping in `src/adapters/ical/` |
 | better-sqlite3 | ≥ 12.1.0 | UID mapping store | Per-container SQLite; Node 24 prebuilds from 12.1.0+ |
 | zod | latest | Config validation | Typed env/secrets at container startup |
 | nodemailer | latest | Withhold notifications | SMTP for owner nudge + IT audit |
@@ -45,7 +45,7 @@
 ```bash
 npm install tsdav googleapis @microsoft/microsoft-graph-client \
   @microsoft/microsoft-graph-types google-auth-library @azure/identity \
-  @pipobscure/ical @martinhipp/rrule better-sqlite3 zod nodemailer pino
+  node-ical @martinhipp/rrule better-sqlite3 zod nodemailer pino
 
 npm install -D typescript tsx vitest @types/node @types/better-sqlite3 \
   @types/nodemailer eslint typescript-eslint
@@ -56,7 +56,7 @@ npm install -D typescript tsx vitest @types/node @types/better-sqlite3 \
 | Recommended | Alternative | When to Use Alternative |
 |-------------|-------------|-------------------------|
 | tsdav | ts-caldav | If tsdav lacks mailbox.org `sync-collection`; spike first |
-| @pipobscure/ical | node-ical | node-ical has more downloads but weaker native TS story |
+| node-ical + adapter | @pipobscure/ical | node-ical chosen for adoption/maturity; type safety via `SourceEvent` adapter layer |
 | googleapis | @googleapis/calendar | Smaller install if only Calendar API needed |
 | better-sqlite3 | JSON file | JSON risks corruption on crash; SQLite gives atomic writes |
 | Custom orchestrator | Hosted sync bridge | Third party holds credentials — rejected per security posture |
@@ -65,7 +65,7 @@ npm install -D typescript tsx vitest @types/node @types/better-sqlite3 \
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| Python (caldav, icalendar, etc.) | Weak static typing on nested iCal structures | TypeScript strict + @pipobscure/ical |
+| Python (caldav, icalendar, etc.) | Weak static typing on nested iCal structures | TypeScript strict + node-ical adapter |
 | Hosted sync bridges (Cronofy, etc.) | Fourth party with credential + calendar access | Self-hosted Docker bridge |
 | Hand-rolled RRULE parser | Recurrence bugs are subtle and costly | @martinhipp/rrule + fixture tests |
 | Shared secrets file across members | Violates per-member isolation | Docker secrets per service |

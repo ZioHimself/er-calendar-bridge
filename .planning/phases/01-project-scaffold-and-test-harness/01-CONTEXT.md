@@ -36,7 +36,7 @@ This phase delivers the project skeleton and test infrastructure only. No classi
 ### Test Harness Depth
 - **D-13:** Unit-first test pyramid. Phase 1 establishes vitest unit tests against `.ics` fixtures. Integration tests added in Phase 3 (mocked CalDAV/API). No E2E until pilot.
 - **D-14:** Acceptance tests enter in Phase 3 — sync loop against fixture CalDAV responses + mocked Google API. No live provider credentials (aligns with TEST-05).
-- **D-15:** Shared test helpers in `test/helpers/`: `loadFixture()`, `parseIcs()` (via `@pipobscure/ical`), `assertTier()` / sidecar comparison against `.expected.json`.
+- **D-15:** Shared test helpers in `test/helpers/`: `loadFixture()`, `parseIcs()` (via `src/adapters/ical/` node-ical adapter → `SourceEvent`), `assertTier()` / sidecar comparison against `.expected.json`. `node-ical` is imported only inside the adapter — domain and tests never import it directly.
 - **D-16:** Smoke test loads one `.ics` fixture per tier, parses successfully, asserts UID and CATEGORIES are present. Proves harness is wired — not a trivial hello-world.
 
 ### Claude's Discretion
@@ -59,7 +59,7 @@ None — all discussed areas had explicit user choices.
 - `.planning/ROADMAP.md` — Phase 1 goal, success criteria, canonical refs
 
 ### Research (in-repo — stack and architecture guidance)
-- `.planning/research/STACK.md` — Node 24, vitest, @pipobscure/ical, eslint, dependency versions
+- `.planning/research/STACK.md` — Node 24, vitest, node-ical (via adapter), eslint, dependency versions
 - `.planning/research/ARCHITECTURE.md` — Module boundaries, build order, TypeScript patterns (inform subfolder placement within the three-layer layout)
 - `.planning/research/PITFALLS.md` — Known landmines (recurrence, CalDAV quirks)
 - `.planning/research/FEATURES.md` — Table stakes vs anti-features
@@ -89,6 +89,7 @@ None — all discussed areas had explicit user choices.
 - User asked about test pyramid and acceptance tests during fixture discussion — clarified that acceptance tests belong in Phase 3 with mocked providers, not Phase 1.
 - Minimum viable tooling (OPS-04) is a recurring constraint: no Prettier, no over-scaffolding of empty modules.
 - Recurrence exceptions are highest-risk (per STATE.md) — minimal but explicit fixture set in Phase 1.
+- **Stack pivot (2026-09-13):** iCal parsing uses battle-tested `node-ical` behind a strict `src/adapters/ical/` adapter instead of `@pipobscure/ical` (low adoption). Type safety enforced at `SourceEvent` boundary.
 
 </specifics>
 

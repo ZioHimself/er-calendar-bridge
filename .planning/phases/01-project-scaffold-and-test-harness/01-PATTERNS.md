@@ -61,7 +61,7 @@
 ```
 
 **Dependency scope (Phase 1 only):**
-- Runtime: `@pipobscure/ical`
+- Runtime: `node-ical@0.27.2` (imported only in `src/adapters/ical/`)
 - Dev: `typescript@5.9.3`, `vitest@5.0.0`, `tsx@4.23.13`, `eslint@10.10.0`, `@eslint/js@10.0.1`, `typescript-eslint@8.70.0`, `@types/node@26.5.1`
 - Do **not** install CalDAV/API deps yet (D-12, OPS-04)
 
@@ -229,31 +229,35 @@ export interface FixtureExpected {
 
 ---
 
+### `src/adapters/ical/parse-source-event.ts` (adapter, transform)
+
+**Analog:** None — establish from `01-RESEARCH.md` adapter example. **Sole file that imports `node-ical`.**
+
+**Core pattern:** `ical.parseICS(ics)` → `findFirstVEvent()` → map `VEvent` to domain `SourceEvent`. Private `asString()` normalizes `ParameterValue` fields.
+
+**Exports:** `parseIcsToSourceEvent(ics: string): SourceEvent`, `getCategories(event: SourceEvent): string[]`
+
+**Boundary rule:** Domain and `test/` never import `node-ical` — only this adapter.
+
+---
+
 ### `test/helpers/parse-ics.ts` (utility, transform)
 
-**Analog:** None — establish from `01-RESEARCH.md` Code Examples.
+**Analog:** None — thin wrapper over adapter.
 
-**Core pattern** (`01-RESEARCH.md` lines 474-491):
+**Core pattern:**
 ```typescript
-import { parse, type Event } from '@pipobscure/ical';
+import { parseIcsToSourceEvent, getCategories } from '../../src/adapters/ical/index.js';
+import type { SourceEvent } from '../../src/domain/types/index.js';
 
-export function parseIcs(ics: string): Event {
-  const cal = parse(ics);
-  const event = cal.events[0];
-  if (!event) {
-    throw new Error('No VEVENT found in fixture');
-  }
-  return event;
+export function parseIcs(ics: string): SourceEvent {
+  return parseIcsToSourceEvent(ics);
 }
 
-export function getCategories(event: Event): string[] {
-  return event.categories
-    .map((c) => (typeof c === 'string' ? c : String(c)))
-    .filter(Boolean);
-}
+export { getCategories };
 ```
 
-**Pitfall 3:** `@pipobscure/ical` returns structured `ICalValue[]` for categories — always normalize via `getCategories()` before assertions.
+**Pitfall 3:** node-ical `ParameterValue` fields normalized in adapter — tests use `SourceEvent` only.
 
 ---
 
@@ -266,10 +270,10 @@ export function getCategories(event: Event): string[] {
 **Suggested signature:**
 ```typescript
 import type { FixtureExpected } from './load-fixture.js';
-import type { Event } from '@pipobscure/ical';
+import type { SourceEvent } from '../../src/domain/types/index.js';
 import { getCategories } from './parse-ics.js';
 
-export function assertTier(event: Event, expected: FixtureExpected): void {
+export function assertTier(event: SourceEvent, expected: FixtureExpected): void {
   // Phase 1: stub or minimal uid/categories check
   // Phase 2: full tier + propagation + washed field comparison
 }
@@ -418,7 +422,7 @@ dist/
 { "type": "module", "engines": { "node": "24.x" } }
 ```
 
-- Pure ESM — no `require()` (required by `@pipobscure/ical`)
+- Pure ESM — no `require()`; `node-ical` imported via ESM in adapter only
 - `module` / `moduleResolution`: `"NodeNext"`
 - Relative imports use `.js` extension in source
 
@@ -472,7 +476,7 @@ src/
 **Source:** `01-RESEARCH.md` Package Legitimacy Audit
 **Apply to:** `npm install` step
 
-All packages marked `[ASSUMED]` — planner must include `checkpoint:human-verify` before install. Pay special attention to `@pipobscure/ical` (low weekly downloads; deliberate STACK.md choice).
+Runtime dep is `node-ical@0.27.2` (mainstream). Type safety enforced at `src/adapters/ical/` → `SourceEvent` boundary (stack pivot 2026-09-13).
 
 ---
 

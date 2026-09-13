@@ -48,10 +48,9 @@ updated: 2026-09-13
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 01-01-T1 | 01-01 | 1 | OPS-04 | T-01-SC | Human verifies npm packages before install | checkpoint | `test -f .planning/phases/01-project-scaffold-and-test-harness/01-RESEARCH.md` | ✅ | ⬜ pending |
-| 01-01-T2 | 01-01 | 1 | TEST-01, OPS-04 | T-01-03 | Tooling configs only; no secrets | tooling | `npm run typecheck && npm run lint && npm run build` | ❌ W0 | ⬜ pending |
-| 01-01-T3 | 01-01 | 1 | OPS-04 | T-01-02 | `.env.example` placeholders only | tooling | `npm run typecheck && npm run build && test -f .env.example` | ❌ W0 | ⬜ pending |
-| 01-02-T1 | 01-02 | 2 | TEST-02 | T-01-04 | Helper exports validated via tsx import smoke | unit | `npx tsx -e "import { loadFixture } from './test/helpers/load-fixture.ts'; import { parseIcs, getCategories } from './test/helpers/parse-ics.ts'; if (typeof loadFixture !== 'function' || typeof parseIcs !== 'function' || typeof getCategories !== 'function') process.exit(1)"` | ❌ W0 | ⬜ pending |
+| 01-01-T1 | 01-01 | 1 | TEST-01, OPS-04 | T-01-01 | Tooling configs; node-ical@0.27.2 installed | tooling | `npm run typecheck && npm run lint && npm run build` | ❌ W0 | ⬜ pending |
+| 01-01-T2 | 01-01 | 1 | OPS-04 | T-01-02 | `.env.example` placeholders only | tooling | `npm run typecheck && npm run build && test -f .env.example` | ❌ W0 | ⬜ pending |
+| 01-02-T1 | 01-02 | 2 | TEST-02 | T-01-04 | Adapter + helper exports; no node-ical outside adapter | unit | `npx tsx -e "import { loadFixture } from './test/helpers/load-fixture.ts'; import { parseIcs, getCategories } from './test/helpers/parse-ics.ts'; if (typeof loadFixture !== 'function' || typeof parseIcs !== 'function' || typeof getCategories !== 'function') process.exit(1)"` | ❌ W0 | ⬜ pending |
 | 01-02-T2 | 01-02 | 2 | TEST-02 | T-01-04 | Synthetic fixture data only; untagged omits CATEGORIES | smoke | `for d in public internal sensitive untagged; do test -f test/fixtures/$d/*.ics && test -f test/fixtures/$d/*.expected.json; done && ! grep -q '^CATEGORIES' test/fixtures/untagged/unclassified.ics` | ❌ W0 | ⬜ pending |
 | 01-03-T1 | 01-03 | 3 | TEST-03 | T-01-04 | Recurrence fixtures parse without error | smoke | `for f in weekly-series modified-instance deleted-instance; do test -f test/fixtures/recurrence/$f.ics; done && npx tsx -e "import { loadFixture } from './test/helpers/load-fixture.ts'; import { parseIcs } from './test/helpers/parse-ics.ts'; for (const n of ['weekly-series','modified-instance','deleted-instance']) { const { ics } = await loadFixture('recurrence', n); parseIcs(ics); }"` | ❌ W0 | ⬜ pending |
 | 01-04-T1 | 01-04 | 4 | TEST-01 | T-01-08 | Smoke test uses synthetic fixture UIDs only | smoke | `npm test` | ❌ W0 | ⬜ pending |
@@ -71,6 +70,7 @@ Artifacts created across plans 01-01 through 01-04:
 - [ ] `eslint.config.mjs` — flat config (01-01)
 - [ ] `src/index.ts` — stub entry (01-01)
 - [ ] `src/domain/types/index.ts` — Tier, SourceEvent, PropagationDecision stubs (01-01)
+- [ ] `src/adapters/ical/parse-source-event.ts`, `index.ts` — node-ical adapter (01-02)
 - [ ] `test/helpers/load-fixture.ts`, `parse-ics.ts`, `assert-sidecar.ts` (01-02)
 - [ ] `test/fixtures/{public,internal,sensitive,untagged}/*.ics` + sidecars (01-02)
 - [ ] `test/fixtures/recurrence/*.ics` + sidecars (01-03)
@@ -92,7 +92,6 @@ Artifacts created across plans 01-01 through 01-04:
 
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
-| npm package legitimacy | OPS-04 | Supply-chain gate before install | Plan 01-01 Task 1 checkpoint — verify all 8 packages on npmjs.com |
 | Node 24 LTS available on pilot laptop | OPS-04 | Environment check outside CI | Run `node --version` on operator laptop; expect v24.x |
 
 ---

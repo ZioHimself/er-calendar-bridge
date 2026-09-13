@@ -42,11 +42,11 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Package verification, tooling configs, and three-layer source scaffold
+- [ ] 01-01-PLAN.md — Tooling configs, node-ical install, and three-layer source scaffold
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Test helpers and classification-tier fixture pairs
+- [ ] 01-02-PLAN.md — node-ical adapter, test helpers, and classification-tier fixture pairs
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
