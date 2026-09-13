@@ -42,7 +42,7 @@ Requirements for the v1.0 pilot milestone. Each maps to one roadmap phase.
 
 - [x] **TEST-01**: vitest test runner with strict TypeScript
 - [x] **TEST-02**: iCalendar fixture library covering all classification tiers and untagged events
-- [ ] **TEST-03**: Recurrence-exception fixtures as explicit high-risk test targets
+- [x] **TEST-03**: Recurrence-exception fixtures as explicit high-risk test targets
 - [ ] **TEST-04**: Domain logic (classify, wash) covered by pure unit tests — no network
 - [ ] **TEST-05**: CI runs tests without live provider credentials
 
@@ -105,7 +105,7 @@ Deferred post-pilot.
 | SEC-05 | Phase 5 | Pending |
 | TEST-01 | Phase 1 | Complete |
 | TEST-02 | Phase 1 | Complete |
-| TEST-03 | Phase 1 | Pending |
+| TEST-03 | Phase 1 | Complete |
 | TEST-04 | Phase 2 | Pending |
 | TEST-05 | Phase 01.1, 5 | Pending |
 | OPS-01 | Phase 3, 5 | Pending |
