@@ -30,6 +30,7 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 **Requirements:** TEST-01, TEST-02, TEST-03, OPS-04
 
 **Success Criteria:**
+
 1. `npm test` runs vitest with at least one passing smoke test
 2. `npm run typecheck` and `npm run lint` succeed on the scaffold
 3. Fixture directory contains representative VEVENT samples: `ER-PUBLIC`, `ER-INTERNAL`, `ER-SENSITIVE`, untagged, and recurrence-exception cases
@@ -39,9 +40,20 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 **Plans:** 4 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 01-01-PLAN.md — Package verification, tooling configs, and three-layer source scaffold
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 01-02-PLAN.md — Test helpers and classification-tier fixture pairs
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 01-03-PLAN.md — Recurrence-exception fixture pairs
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 01-04-PLAN.md — Fixture smoke tests and full validation gate
 
 ### Phase 01.1: CI pipeline (INSERTED)
@@ -53,6 +65,7 @@ Plans:
 **Requirements:** TEST-05, OPS-04
 
 **Success Criteria:**
+
 1. CI workflow runs `npm test`, `npm run lint`, and `npm run typecheck` on push and pull_request
 2. Failed CI blocks merge (branch protection documented in README)
 3. CI does not require live mailbox.org/Google/Microsoft credentials (mocks/fixtures only)
@@ -62,6 +75,7 @@ Plans:
 **Plans:** TBD
 
 Plans:
+
 - [ ] TBD (run `/gsd:plan-phase 01.1` to break down)
 
 ### Phase 2: Classification, washing, and iCal domain logic
@@ -73,6 +87,7 @@ Plans:
 **Requirements:** SYNC-02, SYNC-03, SYNC-04, SYNC-08, SYNC-09, SYNC-10, TEST-04
 
 **Success Criteria:**
+
 1. Untagged events default to Internal (busy-block), never full disclosure
 2. Only explicit `ER-PUBLIC` enables full-content propagation; `ER-SENSITIVE` yields no outbound event
 3. Busy-blocks retain only start, end, stable UID, and generic "Busy" label — all PII fields stripped
@@ -82,6 +97,7 @@ Plans:
 **Plans:** TBD
 
 Plans:
+
 - [ ] TBD (run `/gsd:plan-phase 2` to break down)
 
 ### Phase 3: CalDAV read, UID store, and Google sync loop
@@ -93,6 +109,7 @@ Plans:
 **Requirements:** SYNC-01, SYNC-05, SYNC-06, SYNC-07, SYNC-11, SYNC-12, SYNC-13, SEC-01, SEC-02, SEC-04, OPS-01, OPS-03
 
 **Success Criteria:**
+
 1. Bridge reads events from mailbox.org CalDAV using app-specific password (read-only)
 2. Source event UID maps to Google event ID in SQLite; restart does not create duplicates
 3. Event creation, modification, and deletion on source propagate to Google within the configured sync interval
@@ -102,6 +119,7 @@ Plans:
 **Plans:** TBD
 
 Plans:
+
 - [ ] TBD (run `/gsd:plan-phase 3` to break down)
 
 ### Phase 4: Microsoft Graph writer and withhold notifications
@@ -113,6 +131,7 @@ Plans:
 **Requirements:** SYNC-01, SYNC-14, SYNC-15, SYNC-16, SEC-03, OPS-03
 
 **Success Criteria:**
+
 1. Washed and full-content events write to Microsoft Graph `/events` with the same classification rules as Google
 2. UID mapping supports both Google and Microsoft remote IDs per source event
 3. Owner receives a notification when an event is propagated as busy-block or dropped due to classification
@@ -122,6 +141,7 @@ Plans:
 **Plans:** TBD
 
 Plans:
+
 - [ ] TBD (run `/gsd:plan-phase 4` to break down)
 
 ### Phase 5: Docker packaging and local pilot deployment
@@ -133,6 +153,7 @@ Plans:
 **Requirements:** SYNC-17, SYNC-18, SEC-02, SEC-05, OPS-01, OPS-02, OPS-04, TEST-05
 
 **Success Criteria:**
+
 1. `docker compose up` starts a single-member pilot stack from documented instructions
 2. Each container receives only its own member credentials (Docker secrets or sops/age mount — no shared secrets file)
 3. SQLite UID map persists across container restarts via a named volume
@@ -143,6 +164,7 @@ Plans:
 **Plans:** TBD
 
 Plans:
+
 - [ ] TBD (run `/gsd:plan-phase 5` to break down)
 
 ## Progress
