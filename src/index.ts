@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 export const VERSION = '0.0.0';
 
 export function main(): void {
@@ -5,6 +7,7 @@ export function main(): void {
 }
 
 // Allow `tsx src/index.ts` without CLI framework
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isMain = process.argv[1] === fileURLToPath(import.meta.url);
+if (isMain) {
   main();
 }
