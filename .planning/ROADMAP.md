@@ -171,7 +171,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Project scaffold and test harness | 4/4 | Complete   | 2026-09-13 |
+| 1. Project scaffold and test harness | 4/4 | Complete    | 2026-09-13 |
 | 01.1. CI pipeline (INSERTED) | 0/TBD | Not started | — |
 | 2. Classification, washing, and iCal domain logic | 0/TBD | Not started | — |
 | 3. CalDAV read, UID store, and Google sync loop | 0/TBD | Not started | — |
