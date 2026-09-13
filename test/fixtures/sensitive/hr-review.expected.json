@@ -1,0 +1,7 @@
+{
+  "uid": "hr-review-2026@er.example",
+  "categories": ["ER-SENSITIVE"],
+  "tier": "sensitive",
+  "propagation": "drop",
+  "washed": null
+}

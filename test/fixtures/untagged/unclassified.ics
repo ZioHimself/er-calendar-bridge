@@ -1,0 +1,12 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ER Calendar Bridge//Fixtures//EN
+BEGIN:VEVENT
+UID:unclassified-2026@er.example
+DTSTAMP:20260914T110000Z
+DTSTART;TZID=Europe/Brussels:20260919T090000
+DTEND;TZID=Europe/Brussels:20260919T100000
+SUMMARY:Ad-hoc planning session
+DESCRIPTION:Untagged event for fail-closed classification testing
+END:VEVENT
+END:VCALENDAR

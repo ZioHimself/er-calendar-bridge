@@ -1,0 +1,7 @@
+{
+  "uid": "board-meeting-2026@er.example",
+  "categories": ["ER-PUBLIC"],
+  "tier": "public",
+  "propagation": "full",
+  "washed": null
+}

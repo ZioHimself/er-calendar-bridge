@@ -1,0 +1,7 @@
+{
+  "uid": "team-sync-2026@er.example",
+  "categories": ["ER-INTERNAL"],
+  "tier": "internal",
+  "propagation": "busy",
+  "washed": null
+}
