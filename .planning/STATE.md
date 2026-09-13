@@ -1,24 +1,24 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.0
-milestone_name: milestone
-status: ready_to_plan
-stopped_at: Phase 1 complete (4/4) — ready to discuss Phase 01.1
-last_updated: 2026-09-13T20:59:30.745Z
+milestone_name: Google-only pilot
+status: planning
+stopped_at: Phase 01.1 context gathered
+last_updated: "2026-09-13T21:23:59.208Z"
 last_activity: 2026-09-13
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 1
   total_plans: 4
   completed_plans: 4
-  percent: 17
+  percent: 14
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-10)
+See: .planning/PROJECT.md (updated 2026-09-13)
 
 **Core value:** Sensitive calendar information never leaks to Google or Microsoft — untagged and internal events propagate only as busy-blocks; sensitive events are withheld entirely.
 
@@ -31,13 +31,13 @@ Plan: Not started
 Status: Ready to plan
 Last activity: 2026-09-13
 
-Progress: [██████████] 100%
+Progress: [██░░░░░░░░] 14%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 8
+- Total plans completed: 4
 - Average duration: 2 min
 - Total execution time: 0.09 hours
 
@@ -46,15 +46,11 @@ Progress: [██████████] 100%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-project-scaffold-and-test-harness | 4 | 6 min | 2 min |
-| 1 | 4 | - | - |
 
 **Recent Trend:**
 
 - Last 5 plans: 01-01 (3 min), 01-02 (1 min), 01-03 (1 min), 01-04 (1 min)
 - Trend: —
-
-| Phase 01 P03 | 1min | 1 tasks | 6 files |
-| Phase 01 P04 | 1min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -68,6 +64,8 @@ Progress: [██████████] 100%
 - [Phase 01]: modified-instance follows RESEARCH Pattern 4 multi-VEVENT example with consistent Europe/Brussels TZID
 - [Phase 01]: Smoke tests use parameterized TIER_FIXTURES array with branch on untagged for empty categories
 - [Phase 01]: Recurrence fixtures asserted for truthy uid only — category/tier assertions deferred to Phase 2
+- [2026-09-13]: v1.0 milestone scoped to Google-only pilot; Microsoft Graph deferred to v1.1 (Phase 6)
+- [2026-09-13]: Phase 4 split — withhold notifications separated from Microsoft Graph writer
 
 ### Roadmap Evolution
 
@@ -78,6 +76,9 @@ Progress: [██████████] 100%
 - Phase 5 added: Docker packaging and local pilot deployment
 - Phase 6 added: CI pipeline
 - Phase 6 removed; Phase 01.1 inserted after Phase 1: CI pipeline
+- Phase 4 split (2026-09-13): Withhold notifications and audit log (v1.0)
+- Phase 5 redefined (2026-09-13): Docker packaging — v1.0 milestone completion (Google-only)
+- Phase 6 added (2026-09-13): Microsoft Graph writer (v1.1, post Google pilot)
 
 ### Pending Todos
 
@@ -92,9 +93,9 @@ None yet.
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| *(none)* | | | |
+| v1.1 | Microsoft Graph writer (SYNC-22, SEC-06) | Planned Phase 6 | 2026-09-13 |
 
 ## Session Continuity
 
-Last session: 2026-09-13T20:53:58.842Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-09-13T21:23:59.199Z
+Stopped at: Phase 01.1 context gathered
