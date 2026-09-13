@@ -36,12 +36,13 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 4. Project structure separates `src/domain`, `src/adapters`, and `src/sync` per architecture layering
 5. `.env.example` documents required config keys without secrets
 
-**Plans:** 3 plans
+**Plans:** 4 plans
 
 Plans:
 - [ ] 01-01-PLAN.md — Package verification, tooling configs, and three-layer source scaffold
-- [ ] 01-02-PLAN.md — Test helpers and iCal fixture library (tiers + recurrence)
-- [ ] 01-03-PLAN.md — Fixture smoke tests and full validation gate
+- [ ] 01-02-PLAN.md — Test helpers and classification-tier fixture pairs
+- [ ] 01-03-PLAN.md — Recurrence-exception fixture pairs
+- [ ] 01-04-PLAN.md — Fixture smoke tests and full validation gate
 
 ### Phase 01.1: CI pipeline (INSERTED)
 
