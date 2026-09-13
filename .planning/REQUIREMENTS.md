@@ -5,13 +5,13 @@
 
 Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md`, `it-strategy/er-calendar-bridge/calendar-sync-03-architecture.md`
 
-## v1 Requirements
+## v1.0 Requirements (Google-only pilot)
 
-Requirements for the v1.0 pilot milestone. Each maps to one roadmap phase.
+Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployment). Each maps to one roadmap phase.
 
 ### Sync & Classification
 
-- [ ] **SYNC-01**: One-way sync from mailbox.org (CalDAV) to Google Calendar and Microsoft 365
+- [ ] **SYNC-01**: One-way sync from mailbox.org (CalDAV) to Google Calendar
 - [ ] **SYNC-02**: Per-event classification via iCalendar `CATEGORIES` (`ER-PUBLIC`, `ER-INTERNAL`, `ER-SENSITIVE`)
 - [ ] **SYNC-03**: Default untagged events to Internal (busy-block), never full disclosure
 - [ ] **SYNC-04**: Content washing — strip title, description, location, attendees, organiser, attachments, and tags for non-public events
@@ -34,7 +34,7 @@ Requirements for the v1.0 pilot milestone. Each maps to one roadmap phase.
 
 - [ ] **SEC-01**: Read-only mailbox.org access — never create, modify, or delete source events
 - [ ] **SEC-02**: Credentials encrypted at rest; never plaintext in config or version control
-- [ ] **SEC-03**: Google and Microsoft OAuth scoped to calendar only
+- [ ] **SEC-03**: Google OAuth scoped to calendar only
 - [ ] **SEC-04**: Per-member credential isolation — no shared all-accounts secrets blob
 - [ ] **SEC-05**: Secrets retrieval abstracted behind accessor (interim sops/age → target Vault/OpenBao)
 
@@ -53,9 +53,18 @@ Requirements for the v1.0 pilot milestone. Each maps to one roadmap phase.
 - [ ] **OPS-03**: Operator can see sync status, last success per account, and withheld events
 - [x] **OPS-04**: Minimum viable tooling — no disproportionate operational complexity
 
+## v1.1 Requirements (Microsoft Graph — post Google pilot)
+
+Deferred until v1.0 Google pilot is validated.
+
+### Sync & Security
+
+- [ ] **SYNC-22**: One-way sync from mailbox.org (CalDAV) to Microsoft 365 — mirrors Google path with same classification rules
+- [ ] **SEC-06**: Microsoft OAuth scoped to calendar only
+
 ## v2 Requirements
 
-Deferred post-pilot.
+Deferred post-v1.1.
 
 ### Production Hardening
 
@@ -80,7 +89,7 @@ Deferred post-pilot.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SYNC-01 | Phase 3, 4 | Pending |
+| SYNC-01 | Phase 3 | Pending |
 | SYNC-02 | Phase 2 | Pending |
 | SYNC-03 | Phase 2 | Pending |
 | SYNC-04 | Phase 2 | Pending |
@@ -98,11 +107,13 @@ Deferred post-pilot.
 | SYNC-16 | Phase 4 | Pending |
 | SYNC-17 | Phase 5 | Pending |
 | SYNC-18 | Phase 5 | Pending |
+| SYNC-22 | Phase 6 | Pending |
 | SEC-01 | Phase 3 | Pending |
 | SEC-02 | Phase 5 | Pending |
-| SEC-03 | Phase 4 | Pending |
+| SEC-03 | Phase 3 | Pending |
 | SEC-04 | Phase 3, 5 | Pending |
 | SEC-05 | Phase 5 | Pending |
+| SEC-06 | Phase 6 | Pending |
 | TEST-01 | Phase 1 | Complete |
 | TEST-02 | Phase 1 | Complete |
 | TEST-03 | Phase 1 | Complete |
@@ -114,10 +125,11 @@ Deferred post-pilot.
 | OPS-04 | Phase 1, 01.1, 5 | Complete |
 
 **Coverage:**
-- v1 requirements: 32 total
-- Mapped to phases: 32
+- v1.0 requirements: 32 total
+- v1.1 requirements: 2 total
+- Mapped to phases: 34
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-13*
-*Last updated: 2026-09-13 after roadmap creation*
+*Last updated: 2026-09-13 after Google-only v1.0 phase split*

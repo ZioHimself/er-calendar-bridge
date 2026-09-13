@@ -1,7 +1,7 @@
 # Project Research Summary
 
 **Project:** ER Calendar Bridge
-**Domain:** TypeScript calendar sync service (CalDAV read → Google/Graph write)
+**Domain:** TypeScript calendar sync service (CalDAV read → Google write; Graph deferred to v1.1)
 **Researched:** 2026-09-11
 **Confidence:** HIGH
 
@@ -18,13 +18,15 @@ Python is excluded: strict TypeScript gives compile-time safety across iCal pars
 - **Node 24 LTS + TypeScript strict** — runtime and language
 - **tsdav** — CalDAV read (verify sync-collection on mailbox.org in spike)
 - **node-ical** (via `src/adapters/ical/`) — parse VEVENT → `SourceEvent`
-- **googleapis + @microsoft/microsoft-graph-client** — write targets
+- **googleapis** — v1.0 write target; **@microsoft/microsoft-graph-client** — v1.1
 - **better-sqlite3** — per-container UID mapping
 - **zod + pino + nodemailer** — config, observability, withhold notifications
 
 ### Expected Features
 
-**Must have:** one-way sync, tier classification, washing, idempotency, recurrence, read-only source, per-member isolation, pilot mode, offboarding.
+**Must have (v1.0):** one-way sync to Google, tier classification, washing, idempotency, recurrence, read-only source, per-member isolation, pilot mode, withhold notifications, offboarding.
+
+**v1.1:** Microsoft Graph write path mirroring Google.
 
 **Defer:** Vault runtime, Prometheus, multi-member automation (post-pilot).
 
@@ -34,7 +36,7 @@ Python is excluded: strict TypeScript gives compile-time safety across iCal pars
 
 Single-process container per member. Pure-function pipeline: **read → parse → classify → wash → map → write → notify**. Domain types and writer interface keep Google/Graph adapters swappable.
 
-**Build order:** classify/wash (pure) → store → caldav → google writer → sync loop → graph → notify → docker.
+**Build order:** classify/wash (pure) → store → caldav → google writer → sync loop → notify → docker → graph (v1.1).
 
 ### Critical Pitfalls
 
@@ -46,13 +48,17 @@ Single-process container per member. Pure-function pipeline: **read → parse �
 
 ## Roadmap Implications
 
-| Phase theme | Focus |
-|-------------|-------|
-| 0 — Spike | mailbox.org CalDAV read + tier classification unit tests |
-| 1 — Core pipeline | classify, wash, ical parse (pure TS, vitest) |
-| 2 — Google pilot | UID store, Google writer, sync loop, operator calendar |
-| 3 — Graph + notify | Microsoft writer, SMTP withhold, Docker Compose |
-| 4 — Production hardening | Vault adapter, multi-member, offboarding tooling |
+Aligned with `.planning/ROADMAP.md` (updated 2026-09-13):
+
+| Phase | Focus | Milestone |
+|-------|-------|-----------|
+| 1 — Scaffold | TypeScript, vitest, iCal fixtures | — |
+| 01.1 — CI | GitHub Actions test/lint/typecheck | — |
+| 2 — Domain | classify, wash (pure TS) | — |
+| 3 — Google sync | UID store, Google writer, sync loop | — |
+| 4 — Notify | SMTP withhold alerts, audit log | — |
+| 5 — Docker | Compose pilot deployment | **v1.0 complete** |
+| 6 — Graph | Microsoft writer, dual UID mapping | v1.1 |
 
 ## Language Decision
 

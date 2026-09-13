@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A read-only sync service that propagates mailbox.org calendar events to Google Calendar and Microsoft 365 for European Resolve members who use those clients. Events are classified and washed inside the bridge before any data crosses to third-party providers. mailbox.org remains the sole source of truth.
+A read-only sync service that propagates mailbox.org calendar events to Google Calendar (v1.0 pilot) and, after pilot validation, Microsoft 365 (v1.1) for European Resolve members who use those clients. Events are classified and washed inside the bridge before any data crosses to third-party providers. mailbox.org remains the sole source of truth.
 
 ## Core Value
 
@@ -12,13 +12,11 @@ Sensitive calendar information never leaks to Google or Microsoft — untagged a
 
 ### Validated
 
-- [x] Strict TypeScript scaffold with vitest, lint, typecheck, and build scripts — Validated in Phase 1
-- [x] Fixture-driven test harness for iCalendar samples including recurrence exceptions — Validated in Phase 1
-- [x] `.env.example` config template without secrets — Validated in Phase 1
+(None yet — ship to validate)
 
-### Active
+### Active (v1.0 — Google pilot)
 
-- [ ] One-way sync from mailbox.org (CalDAV) to Google Calendar and Microsoft 365
+- [ ] One-way sync from mailbox.org (CalDAV) to Google Calendar
 - [ ] Per-event classification via iCalendar `CATEGORIES` (`ER-PUBLIC`, `ER-INTERNAL`, `ER-SENSITIVE`)
 - [ ] Default untagged events to Internal (busy-block), never full disclosure
 - [ ] Content washing: strip title, description, location, attendees, organiser, attachments, tags for non-public events
@@ -31,6 +29,10 @@ Sensitive calendar information never leaks to Google or Microsoft — untagged a
 - [ ] Docker Compose deployment: one container per synced member
 - [ ] Single-account pilot before expanding to other members
 - [ ] Offboarding: revoke credentials, remove container, delete propagated copies
+
+### Active (v1.1 — after Google pilot)
+
+- [ ] One-way sync from mailbox.org (CalDAV) to Microsoft 365 — mirrors Google path
 
 ### Out of Scope
 
@@ -46,7 +48,11 @@ Sensitive calendar information never leaks to Google or Microsoft — untagged a
 
 **Organisation:** European Resolve VZW — ~7 people, ~4 active schedulers.
 
-**Problem:** mailbox.org exposes calendars over CalDAV with per-user app passwords. Google Calendar and Outlook do not act as acceptable CalDAV clients. A bridge must speak CalDAV (read), Google Calendar API (write), and Microsoft Graph (write).
+**Problem:** mailbox.org exposes calendars over CalDAV with per-user app passwords. Google Calendar and Outlook do not act as acceptable CalDAV clients. A bridge must speak CalDAV (read), Google Calendar API (write), and eventually Microsoft Graph (write).
+
+**Milestone strategy:**
+- **v1.0:** Google-only pilot — validate CalDAV read, classification, washing, Google write, notifications, and Docker deployment on operator laptop
+- **v1.1:** Add Microsoft Graph writer after Google pilot is validated
 
 **Existing decisions (IT strategy):**
 - Classification via single calendar + `CATEGORIES` tags (not separate calendars per tier)
@@ -64,7 +70,7 @@ Sensitive calendar information never leaks to Google or Microsoft — untagged a
 ## Constraints
 
 - **Language**: TypeScript only — strict mode; no Python
-- **Security**: Read-only source access; calendar-scoped OAuth for Google/Microsoft; host treated as Sensitive-tier infrastructure
+- **Security**: Read-only source access; calendar-scoped OAuth per target provider; host treated as Sensitive-tier infrastructure
 - **Scale**: Minimum viable tooling — 7 people, 4 schedulers; avoid operational complexity disproportionate to team size
 - **Portability**: Host migration (laptop → server) must be a deployment change, not a rewrite
 - **Data protection**: Attendee/organiser PII not propagated except for `ER-PUBLIC` events where disclosure is intended
@@ -80,6 +86,7 @@ Sensitive calendar information never leaks to Google or Microsoft — untagged a
 | Default untagged → Internal busy-block | Fail-closed; untagged can only under-share, never leak | — Pending |
 | Assemble from maintained connectors | Recurrence reconciliation is error-prone to hand-write | — Pending |
 | Pilot: operator calendar only on laptop | Bounds interim risk; validates end-to-end before others | — Pending |
+| Google-first v1.0 milestone | Validate core pipeline on one write target before adding Graph complexity | — Pending |
 | TypeScript (strict) over Python | Type safety across iCal/REST translation; team already uses TS (european-resolve) | — Pending |
 
 ## Evolution
@@ -99,9 +106,5 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
-## Current State
-
-Phase 1 complete — strict TypeScript ESM scaffold, node-ical adapter, fixture library (7 tier/recurrence pairs), and passing smoke test suite. Ready for Phase 01.1 (CI pipeline).
-
 ---
-*Last updated: 2026-09-13 after Phase 1 completion*
+*Last updated: 2026-09-13 after Google-only v1.0 phase split*

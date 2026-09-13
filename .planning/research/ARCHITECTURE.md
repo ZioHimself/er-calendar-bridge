@@ -59,11 +59,11 @@
 | 1 | `ical/` + `classify/` + `wash/` | Pure functions; testable without network |
 | 2 | `store/` | UID map needed before any writer |
 | 3 | `caldav/` | Read path; spike mailbox.org quirks |
-| 4 | `writers/google/` | Pilot likely Google-first |
+| 4 | `writers/google/` | v1.0 pilot target |
 | 5 | `sync/` loop | Wire read → classify → write |
-| 6 | `writers/graph/` | Second target; reuse patterns |
-| 7 | `notify/` | After withhold path proven |
-| 8 | Docker + secrets | Deployment hardening |
+| 6 | `notify/` | Withhold alerts + audit (v1.0) |
+| 7 | Docker + secrets | v1.0 milestone completion |
+| 8 | `writers/graph/` | v1.1 — second target; reuse patterns |
 
 ## TypeScript Patterns
 
