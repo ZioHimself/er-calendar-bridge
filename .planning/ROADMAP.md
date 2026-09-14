@@ -105,13 +105,13 @@ Plans:
 4. Restrict-only rule enforced: no code path promotes an event to full content without `ER-PUBLIC`
 5. Recurrence-exception fixtures parse and classify without leaking source fields on non-public tiers
 
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
 
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Domain types and classifySourceEvent (TDD, D-01–D-04, D-11–D-12)
+- [x] 02-01-PLAN.md — Domain types and classifySourceEvent (TDD, D-01–D-04, D-11–D-12)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -215,7 +215,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Project scaffold and test harness | 4/4 | Complete | 2026-09-13 |
 | 01.1. CI pipeline (INSERTED) | 3/3 | Complete   | 2026-09-13 |
-| 2. Classification, washing, and iCal domain logic | 0/3 | Not started | — |
+| 2. Classification, washing, and iCal domain logic | 1/3 | In Progress|  |
 | 3. CalDAV read, UID store, and Google sync loop | 0/TBD | Not started | — |
 | 4. Withhold notifications and audit log | 0/TBD | Not started | — |
 | 5. Docker packaging and local pilot deployment (v1.0) | 0/TBD | Not started | — |
