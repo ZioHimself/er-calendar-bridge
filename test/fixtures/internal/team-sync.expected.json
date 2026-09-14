@@ -3,5 +3,10 @@
   "categories": ["ER-INTERNAL"],
   "tier": "internal",
   "propagation": "busy",
-  "washed": null
+  "washed": {
+    "uid": "team-sync-2026@er.example",
+    "start": "2026-09-16T08:00:00.000Z",
+    "end": "2026-09-16T08:30:00.000Z",
+    "summary": "Busy"
+  }
 }

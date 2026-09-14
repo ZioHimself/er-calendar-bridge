@@ -3,5 +3,11 @@
   "categories": ["ER-INTERNAL"],
   "tier": "internal",
   "propagation": "busy",
-  "washed": null
+  "washed": {
+    "uid": "weekly-standup@er.example",
+    "start": "2026-09-01T07:00:00.000Z",
+    "end": "2026-09-01T07:30:00.000Z",
+    "summary": "Busy",
+    "isRecurring": true
+  }
 }
