@@ -95,7 +95,7 @@ Plans:
 
 **Depends on:** Phase 01.1
 
-**Requirements:** SYNC-02, SYNC-03, SYNC-04, SYNC-08, SYNC-09, SYNC-10, TEST-04
+**Requirements:** SYNC-02, SYNC-03, SYNC-04, SYNC-05, SYNC-08, SYNC-09, SYNC-10, TEST-04
 
 **Success Criteria:**
 
