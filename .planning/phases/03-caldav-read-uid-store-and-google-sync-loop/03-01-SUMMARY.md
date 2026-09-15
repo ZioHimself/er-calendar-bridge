@@ -68,7 +68,7 @@ Each task was committed atomically:
 2. **Task 2: Install Phase 3 dependencies and spike scaffold** — `16d665b` (feat)
 3. **Task 3: Record spike outcome (research synthesis)** — `dfbdf76` (docs)
 
-**Plan metadata:** _(pending final docs commit)_
+**Plan metadata:** `7e5914e` (docs: complete plan)
 
 ## Files Created/Modified
 
