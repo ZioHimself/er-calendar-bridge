@@ -16,7 +16,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 - [ ] **SYNC-03**: Default untagged events to Internal (busy-block), never full disclosure
 - [ ] **SYNC-04**: Content washing — strip title, description, location, attendees, organiser, attachments, and tags for non-public events
 - [x] **SYNC-05**: Withhold `ER-SENSITIVE` events entirely (no busy-block)
-- [ ] **SYNC-06**: Handle create, update, delete propagation within minutes
+- [x] **SYNC-06**: Handle create, update, delete propagation within minutes
 - [x] **SYNC-07**: Correctly handle recurring events and individually modified/deleted instances
 - [ ] **SYNC-08**: Restrict-only principle — only `ER-PUBLIC` enables full disclosure
 - [ ] **SYNC-09**: Bridge MUST NOT modify or write classification tags on mailbox.org source events
@@ -50,7 +50,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 
 - [x] **OPS-01**: Single-account pilot configuration (operator calendar only)
 - [ ] **OPS-02**: Host migration (laptop → server) is a deployment change, not a rewrite
-- [ ] **OPS-03**: Operator can see sync status, last success per account, and withheld events
+- [x] **OPS-03**: Operator can see sync status, last success per account, and withheld events
 - [x] **OPS-04**: Minimum viable tooling — no disproportionate operational complexity
 
 ## v1.1 Requirements (Microsoft Graph — post Google pilot)
@@ -94,7 +94,7 @@ Deferred post-v1.1.
 | SYNC-03 | Phase 2 | Pending |
 | SYNC-04 | Phase 2 | Pending |
 | SYNC-05 | Phase 2 | Complete |
-| SYNC-06 | Phase 3 | Pending |
+| SYNC-06 | Phase 3 | Complete |
 | SYNC-07 | Phase 3 | Complete |
 | SYNC-08 | Phase 2 | Pending |
 | SYNC-09 | Phase 2 | Pending |
@@ -121,7 +121,7 @@ Deferred post-v1.1.
 | TEST-05 | Phase 01.1, 5 | Pending |
 | OPS-01 | Phase 3, 5 | Complete |
 | OPS-02 | Phase 5 | Pending |
-| OPS-03 | Phase 3, 4 | Pending |
+| OPS-03 | Phase 3, 4 | Complete |
 | OPS-04 | Phase 1, 01.1, 5 | Complete |
 
 **Coverage:**

@@ -20,7 +20,7 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 - [ ] **Phase 1: Project scaffold and test harness** — TypeScript strict project, vitest, iCal fixture library
 - [x] **Phase 01.1: CI pipeline (INSERTED)** — GitHub Actions for test, lint, and typecheck (completed 2026-09-13)
 - [x] **Phase 2: Classification, washing, and iCal domain logic** — Fail-closed tier rules and busy-block construction (completed 2026-09-14)
-- [ ] **Phase 3: CalDAV read, UID store, and Google sync loop** — mailbox.org read, SQLite mapping, Google pilot sync
+- [x] **Phase 3: CalDAV read, UID store, and Google sync loop** — mailbox.org read, SQLite mapping, Google pilot sync (completed 2026-09-15)
 - [ ] **Phase 4: Withhold notifications and audit log** — SMTP owner alerts, de-duplication, IT audit record
 - [ ] **Phase 5: Docker packaging and local pilot deployment (v1.0)** — Image, Compose, secrets, Google-only operator laptop pilot
 - [ ] **Phase 6: Microsoft Graph writer (v1.1)** — Outlook write path mirroring Google; dual UID mapping
@@ -138,7 +138,7 @@ Plans:
 5. Operator can run a single-account pilot sync against their own Google calendar
 6. Google OAuth is scoped to calendar only
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 
@@ -158,7 +158,7 @@ Plans:
 
 **Wave 3**
 
-- [ ] 03-06-PLAN.md — runSyncCycle, integration tests, CLI sync/--watch
+- [x] 03-06-PLAN.md — runSyncCycle, integration tests, CLI sync/--watch
 
 ### Phase 4: Withhold notifications and audit log
 
@@ -232,7 +232,7 @@ Plans:
 | 1. Project scaffold and test harness | 4/4 | Complete | 2026-09-13 |
 | 01.1. CI pipeline (INSERTED) | 3/3 | Complete   | 2026-09-13 |
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
-| 3. CalDAV read, UID store, and Google sync loop | 5/6 | In Progress|  |
+| 3. CalDAV read, UID store, and Google sync loop | 6/6 | Complete   | 2026-09-15 |
 | 4. Withhold notifications and audit log | 0/TBD | Not started | — |
 | 5. Docker packaging and local pilot deployment (v1.0) | 0/TBD | Not started | — |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |
