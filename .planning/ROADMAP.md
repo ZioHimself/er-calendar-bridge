@@ -138,11 +138,27 @@ Plans:
 5. Operator can run a single-account pilot sync against their own Google calendar
 6. Google OAuth is scoped to calendar only
 
-**Plans:** TBD
+**Plans:** 6 plans
 
 Plans:
 
-- [ ] TBD (run `/gsd:plan-phase 3` to break down)
+**Wave 0**
+
+- [ ] 03-01-PLAN.md — mailbox.org sync-collection spike, npm deps, 03-SPIKE-SYNC.md
+
+**Wave 1** *(parallel after Wave 0 — no file overlap)*
+
+- [ ] 03-02-PLAN.md — Sync ports + Zod env loader (SEC-04, OPS-01)
+- [ ] 03-03-PLAN.md — SQLite mapping + sync_state stores (SYNC-11, OPS-03)
+
+**Wave 2** *(parallel — adapters)*
+
+- [ ] 03-04-PLAN.md — Read-only CalDAV reader (SEC-01, SYNC-12/13)
+- [ ] 03-05-PLAN.md — Google Calendar writer + OAuth scope (SEC-03, SYNC-05/07)
+
+**Wave 3**
+
+- [ ] 03-06-PLAN.md — runSyncCycle, integration tests, CLI sync/--watch
 
 ### Phase 4: Withhold notifications and audit log
 
@@ -216,7 +232,7 @@ Plans:
 | 1. Project scaffold and test harness | 4/4 | Complete | 2026-09-13 |
 | 01.1. CI pipeline (INSERTED) | 3/3 | Complete   | 2026-09-13 |
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
-| 3. CalDAV read, UID store, and Google sync loop | 0/TBD | Not started | — |
+| 3. CalDAV read, UID store, and Google sync loop | 0/6 | Not started | — |
 | 4. Withhold notifications and audit log | 0/TBD | Not started | — |
 | 5. Docker packaging and local pilot deployment (v1.0) | 0/TBD | Not started | — |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |
