@@ -21,7 +21,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 - [ ] **SYNC-08**: Restrict-only principle — only `ER-PUBLIC` enables full disclosure
 - [ ] **SYNC-09**: Bridge MUST NOT modify or write classification tags on mailbox.org source events
 - [ ] **SYNC-10**: Attendee/organiser PII not propagated except for `ER-PUBLIC` where disclosure is intended
-- [ ] **SYNC-11**: Idempotent sync — restarts do not create duplicate external events
+- [x] **SYNC-11**: Idempotent sync — restarts do not create duplicate external events
 - [ ] **SYNC-12**: Deletions on source propagate as deletions, not stale copies
 - [ ] **SYNC-13**: Scheduling window accounts for mailbox.org ~1-year future-event CalDAV limit
 - [ ] **SYNC-14**: Notify event owners when content is withheld or downgraded
@@ -99,7 +99,7 @@ Deferred post-v1.1.
 | SYNC-08 | Phase 2 | Pending |
 | SYNC-09 | Phase 2 | Pending |
 | SYNC-10 | Phase 2 | Pending |
-| SYNC-11 | Phase 3 | Pending |
+| SYNC-11 | Phase 3 | Complete |
 | SYNC-12 | Phase 3 | Pending |
 | SYNC-13 | Phase 3 | Pending |
 | SYNC-14 | Phase 4 | Pending |

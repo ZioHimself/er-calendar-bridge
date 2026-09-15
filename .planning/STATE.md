@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Google-only pilot
 status: executing
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-09-15T15:50:17.254Z"
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-09-15T15:53:00.000Z"
 last_activity: 2026-09-15
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 4
-  completed_plans: 12
-  percent: 18
+  completed_plans: 13
+  percent: 19
 ---
 
 # Project State
@@ -27,17 +27,17 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 ## Current Position
 
 Phase: 03 (caldav-read-uid-store-and-google-sync-loop) — EXECUTING
-Plan: 3 of 6
+Plan: 4 of 6
 Status: Ready to execute
-Last activity: 2026-09-15 -- Completed 03-02 plan (sync ports + env loader)
+Last activity: 2026-09-15 -- Completed 03-03 plan (SQLite mapping + sync_state stores)
 
-Progress: [██░░░░░░░░] 18%
+Progress: [██░░░░░░░░] 19%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 11
+- Total plans completed: 13
 - Average duration: 2 min
 - Total execution time: 0.09 hours
 
@@ -47,7 +47,9 @@ Progress: [██░░░░░░░░] 18%
 |-------|-------|-------|----------|
 | 01-project-scaffold-and-test-harness | 4 | 6 min | 2 min |
 | 02 | 3 | - | - |
-| 03-caldav-read-uid-store-and-google-sync-loop | 2 | 11 min | 5.5 min |
+| 03-caldav-read-uid-store-and-google-sync-loop | 3 | 13 min | 4.3 min |
+
+| Phase 03-caldav-read-uid-store-and-google-sync-loop P03 | 2 min | 2 tasks | 4 files |
 
 **Recent Trend:**
 
@@ -74,6 +76,8 @@ Progress: [██░░░░░░░░] 18%
 - [Phase 03]: spike:mailbox-sync script is read-only (no tsdav write APIs)
 - [Phase 03]: Unknown env keys rejected via allowlist before Zod parse (runtime-safe with process.env)
 - [Phase 03]: Default sqlite path ./data/bridge.db when DATA_DIR and SQLITE_PATH unset
+- [Phase 03]: Master event_mappings rows use empty-string recurrence_id for composite PK (D-06)
+- [Phase 03]: Tombstone href routing via source_href_snapshot table (D-05)
 
 ### Roadmap Evolution
 
@@ -105,5 +109,5 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-15T15:50:01.321Z
-Stopped at: Completed 03-02-PLAN.md
+Last session: 2026-09-15T15:53:00.000Z
+Stopped at: Completed 03-03-PLAN.md

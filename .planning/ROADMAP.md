@@ -138,7 +138,7 @@ Plans:
 5. Operator can run a single-account pilot sync against their own Google calendar
 6. Google OAuth is scoped to calendar only
 
-**Plans:** 2/6 plans executed
+**Plans:** 3/6 plans executed
 
 Plans:
 
@@ -149,7 +149,7 @@ Plans:
 **Wave 1** *(parallel after Wave 0 — no file overlap)*
 
 - [x] 03-02-PLAN.md — Sync ports + Zod env loader (SEC-04, OPS-01)
-- [ ] 03-03-PLAN.md — SQLite mapping + sync_state stores (SYNC-11, OPS-03)
+- [x] 03-03-PLAN.md — SQLite mapping + sync_state stores (SYNC-11, OPS-03)
 
 **Wave 2** *(parallel — adapters)*
 
