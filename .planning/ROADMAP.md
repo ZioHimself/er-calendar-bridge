@@ -138,13 +138,13 @@ Plans:
 5. Operator can run a single-account pilot sync against their own Google calendar
 6. Google OAuth is scoped to calendar only
 
-**Plans:** 6 plans
+**Plans:** 1/6 plans executed
 
 Plans:
 
 **Wave 0**
 
-- [ ] 03-01-PLAN.md — mailbox.org sync-collection spike, npm deps, 03-SPIKE-SYNC.md
+- [x] 03-01-PLAN.md — mailbox.org sync-collection spike, npm deps, 03-SPIKE-SYNC.md
 
 **Wave 1** *(parallel after Wave 0 — no file overlap)*
 

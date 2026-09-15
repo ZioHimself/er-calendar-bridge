@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Google-only pilot
 status: executing
-stopped_at: Phase 03 context gathered
-last_updated: "2026-09-15T15:42:49.003Z"
-last_activity: 2026-09-15 -- Phase 03 planning complete
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-09-15T15:47:30.000Z"
+last_activity: 2026-09-15 -- Completed 03-01 plan (spike + deps)
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 4
-  completed_plans: 10
-  percent: 14
+  completed_plans: 11
+  percent: 15
 ---
 
 # Project State
@@ -22,22 +22,22 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 
 **Core value:** Sensitive calendar information never leaks to Google or Microsoft — untagged and internal events propagate only as busy-blocks; sensitive events are withheld entirely.
 
-**Current focus:** Phase 03 — caldav read uid store and google sync loop
+**Current focus:** Phase 03 — caldav-read-uid-store-and-google-sync-loop
 
 ## Current Position
 
-Phase: 03
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-09-15 -- Phase 03 planning complete
+Phase: 03 (caldav-read-uid-store-and-google-sync-loop) — EXECUTING
+Plan: 2 of 6
+Status: Executing Phase 03
+Last activity: 2026-09-15 -- Completed 03-01 plan (spike + deps)
 
-Progress: [██░░░░░░░░] 14%
+Progress: [██░░░░░░░░] 15%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 7
+- Total plans completed: 11
 - Average duration: 2 min
 - Total execution time: 0.09 hours
 
@@ -47,6 +47,7 @@ Progress: [██░░░░░░░░] 14%
 |-------|-------|-------|----------|
 | 01-project-scaffold-and-test-harness | 4 | 6 min | 2 min |
 | 02 | 3 | - | - |
+| 03-caldav-read-uid-store-and-google-sync-loop | 1 | 8 min | 8 min |
 
 **Recent Trend:**
 
@@ -67,6 +68,8 @@ Progress: [██░░░░░░░░] 14%
 - [Phase 01]: Recurrence fixtures asserted for truthy uid only — category/tier assertions deferred to Phase 2
 - [2026-09-13]: v1.0 milestone scoped to Google-only pilot; Microsoft Graph deferred to v1.1 (Phase 6)
 - [2026-09-13]: Phase 4 split — withhold notifications separated from Microsoft Graph writer
+- [Phase 03]: Wave 0 default CalDAV degraded_mode basic_sync until live mailbox.org spike confirms webdav_sync
+- [Phase 03]: spike:mailbox-sync script is read-only (no tsdav write APIs)
 
 ### Roadmap Evolution
 
@@ -87,7 +90,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- mailbox.org `sync-collection` semantics should be validated in Phase 3 spike before assuming tsdav efficiency
+- mailbox.org live spike re-run recommended to upgrade 03-SPIKE-SYNC.md from research synthesis to operator-verified
 - Recurrence exceptions remain highest-risk translation case — fixture coverage mandatory in Phases 1–3
 
 ## Deferred Items
@@ -98,5 +101,5 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-15T15:02:58.247Z
-Stopped at: Phase 03 context gathered
+Last session: 2026-09-15T15:47:30.000Z
+Stopped at: Completed 03-01-PLAN.md
