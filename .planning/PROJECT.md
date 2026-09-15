@@ -106,5 +106,9 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
+## Current State
+
+Phase 3 complete (2026-09-15): Google pilot sync loop — CalDAV read, SQLite UID mapping, Google writer, `sync` / `sync --watch` CLI with mocked integration tests. Live mailbox.org spike and operator Google pilot still require human credentials.
+
 ---
-*Last updated: 2026-09-13 after Google-only v1.0 phase split*
+*Last updated: 2026-09-15 after Phase 3 execution*
