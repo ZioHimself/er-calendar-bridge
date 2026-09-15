@@ -11,13 +11,21 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "spike:mailbox-sync": "tsx scripts/spike-mailbox-sync.mts"
   },
   "dependencies": {
-    "node-ical": "^0.27.2"
+    "better-sqlite3": "^13.0.3",
+    "google-auth-library": "^11.0.2",
+    "googleapis": "^181.0.0",
+    "node-ical": "^0.27.2",
+    "pino": "^10.3.1",
+    "tsdav": "^2.3.3",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^26.5.1",
     "eslint": "^10.10.0",
     "tsx": "^4.23.13",
