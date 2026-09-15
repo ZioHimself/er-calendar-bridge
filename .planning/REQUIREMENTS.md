@@ -11,7 +11,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 
 ### Sync & Classification
 
-- [ ] **SYNC-01**: One-way sync from mailbox.org (CalDAV) to Google Calendar
+- [x] **SYNC-01**: One-way sync from mailbox.org (CalDAV) to Google Calendar
 - [ ] **SYNC-02**: Per-event classification via iCalendar `CATEGORIES` (`ER-PUBLIC`, `ER-INTERNAL`, `ER-SENSITIVE`)
 - [ ] **SYNC-03**: Default untagged events to Internal (busy-block), never full disclosure
 - [ ] **SYNC-04**: Content washing — strip title, description, location, attendees, organiser, attachments, and tags for non-public events
@@ -22,8 +22,8 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 - [ ] **SYNC-09**: Bridge MUST NOT modify or write classification tags on mailbox.org source events
 - [ ] **SYNC-10**: Attendee/organiser PII not propagated except for `ER-PUBLIC` where disclosure is intended
 - [x] **SYNC-11**: Idempotent sync — restarts do not create duplicate external events
-- [ ] **SYNC-12**: Deletions on source propagate as deletions, not stale copies
-- [ ] **SYNC-13**: Scheduling window accounts for mailbox.org ~1-year future-event CalDAV limit
+- [x] **SYNC-12**: Deletions on source propagate as deletions, not stale copies
+- [x] **SYNC-13**: Scheduling window accounts for mailbox.org ~1-year future-event CalDAV limit
 - [ ] **SYNC-14**: Notify event owners when content is withheld or downgraded
 - [ ] **SYNC-15**: De-duplicate withhold notifications (stable key + suppression window)
 - [ ] **SYNC-16**: IT/operator access to audit record of withholding events
@@ -32,7 +32,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 
 ### Security
 
-- [ ] **SEC-01**: Read-only mailbox.org access — never create, modify, or delete source events
+- [x] **SEC-01**: Read-only mailbox.org access — never create, modify, or delete source events
 - [ ] **SEC-02**: Credentials encrypted at rest; never plaintext in config or version control
 - [ ] **SEC-03**: Google OAuth scoped to calendar only
 - [x] **SEC-04**: Per-member credential isolation — no shared all-accounts secrets blob
@@ -89,7 +89,7 @@ Deferred post-v1.1.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SYNC-01 | Phase 3 | Pending |
+| SYNC-01 | Phase 3 | Complete |
 | SYNC-02 | Phase 2 | Pending |
 | SYNC-03 | Phase 2 | Pending |
 | SYNC-04 | Phase 2 | Pending |
@@ -100,15 +100,15 @@ Deferred post-v1.1.
 | SYNC-09 | Phase 2 | Pending |
 | SYNC-10 | Phase 2 | Pending |
 | SYNC-11 | Phase 3 | Complete |
-| SYNC-12 | Phase 3 | Pending |
-| SYNC-13 | Phase 3 | Pending |
+| SYNC-12 | Phase 3 | Complete |
+| SYNC-13 | Phase 3 | Complete |
 | SYNC-14 | Phase 4 | Pending |
 | SYNC-15 | Phase 4 | Pending |
 | SYNC-16 | Phase 4 | Pending |
 | SYNC-17 | Phase 5 | Pending |
 | SYNC-18 | Phase 5 | Pending |
 | SYNC-22 | Phase 6 | Pending |
-| SEC-01 | Phase 3 | Pending |
+| SEC-01 | Phase 3 | Complete |
 | SEC-02 | Phase 5 | Pending |
 | SEC-03 | Phase 3 | Pending |
 | SEC-04 | Phase 3, 5 | Complete |

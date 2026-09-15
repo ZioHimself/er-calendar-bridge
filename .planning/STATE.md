@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Google-only pilot
 status: executing
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-09-15T15:53:00.000Z"
+stopped_at: Completed 03-04-PLAN.md
+last_updated: "2026-09-15T15:56:30.000Z"
 last_activity: 2026-09-15
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 4
-  completed_plans: 13
-  percent: 19
+  completed_plans: 14
+  percent: 22
 ---
 
 # Project State
@@ -27,17 +27,17 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 ## Current Position
 
 Phase: 03 (caldav-read-uid-store-and-google-sync-loop) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
-Last activity: 2026-09-15 -- Completed 03-03 plan (SQLite mapping + sync_state stores)
+Last activity: 2026-09-15 — Completed 03-04 plan (read-only CalDAV reader)
 
-Progress: [██░░░░░░░░] 19%
+Progress: [██░░░░░░░░] 22%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 13
+- Total plans completed: 14
 - Average duration: 2 min
 - Total execution time: 0.09 hours
 
@@ -47,7 +47,9 @@ Progress: [██░░░░░░░░] 19%
 |-------|-------|-------|----------|
 | 01-project-scaffold-and-test-harness | 4 | 6 min | 2 min |
 | 02 | 3 | - | - |
-| 03-caldav-read-uid-store-and-google-sync-loop | 3 | 13 min | 4.3 min |
+| 03-caldav-read-uid-store-and-google-sync-loop | 4 | 18 min | 4.5 min |
+
+| Phase 03-caldav-read-uid-store-and-google-sync-loop P04 | 5 min | 3 tasks | 7 files |
 
 | Phase 03-caldav-read-uid-store-and-google-sync-loop P03 | 2 min | 2 tasks | 4 files |
 
@@ -78,6 +80,8 @@ Progress: [██░░░░░░░░] 19%
 - [Phase 03]: Default sqlite path ./data/bridge.db when DATA_DIR and SQLITE_PATH unset
 - [Phase 03]: Master event_mappings rows use empty-string recurrence_id for composite PK (D-06)
 - [Phase 03]: Tombstone href routing via source_href_snapshot table (D-05)
+- [Phase 03]: CalDavReader poll defaults to basic_sync; webdav_sync when stored in sync_state
+- [Phase 03]: Tombstone deleted[] entries require resolved source uid from href snapshot (D-05)
 
 ### Roadmap Evolution
 
@@ -109,5 +113,5 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-15T15:53:00.000Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-09-15T15:56:30.000Z
+Stopped at: Completed 03-04-PLAN.md
