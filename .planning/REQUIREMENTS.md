@@ -15,9 +15,9 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 - [ ] **SYNC-02**: Per-event classification via iCalendar `CATEGORIES` (`ER-PUBLIC`, `ER-INTERNAL`, `ER-SENSITIVE`)
 - [ ] **SYNC-03**: Default untagged events to Internal (busy-block), never full disclosure
 - [ ] **SYNC-04**: Content washing — strip title, description, location, attendees, organiser, attachments, and tags for non-public events
-- [ ] **SYNC-05**: Withhold `ER-SENSITIVE` events entirely (no busy-block)
+- [x] **SYNC-05**: Withhold `ER-SENSITIVE` events entirely (no busy-block)
 - [ ] **SYNC-06**: Handle create, update, delete propagation within minutes
-- [ ] **SYNC-07**: Correctly handle recurring events and individually modified/deleted instances
+- [x] **SYNC-07**: Correctly handle recurring events and individually modified/deleted instances
 - [ ] **SYNC-08**: Restrict-only principle — only `ER-PUBLIC` enables full disclosure
 - [ ] **SYNC-09**: Bridge MUST NOT modify or write classification tags on mailbox.org source events
 - [ ] **SYNC-10**: Attendee/organiser PII not propagated except for `ER-PUBLIC` where disclosure is intended
@@ -34,7 +34,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 
 - [x] **SEC-01**: Read-only mailbox.org access — never create, modify, or delete source events
 - [ ] **SEC-02**: Credentials encrypted at rest; never plaintext in config or version control
-- [ ] **SEC-03**: Google OAuth scoped to calendar only
+- [x] **SEC-03**: Google OAuth scoped to calendar only
 - [x] **SEC-04**: Per-member credential isolation — no shared all-accounts secrets blob
 - [ ] **SEC-05**: Secrets retrieval abstracted behind accessor (interim sops/age → target Vault/OpenBao)
 
@@ -93,9 +93,9 @@ Deferred post-v1.1.
 | SYNC-02 | Phase 2 | Pending |
 | SYNC-03 | Phase 2 | Pending |
 | SYNC-04 | Phase 2 | Pending |
-| SYNC-05 | Phase 2 | Pending |
+| SYNC-05 | Phase 2 | Complete |
 | SYNC-06 | Phase 3 | Pending |
-| SYNC-07 | Phase 3 | Pending |
+| SYNC-07 | Phase 3 | Complete |
 | SYNC-08 | Phase 2 | Pending |
 | SYNC-09 | Phase 2 | Pending |
 | SYNC-10 | Phase 2 | Pending |
@@ -110,7 +110,7 @@ Deferred post-v1.1.
 | SYNC-22 | Phase 6 | Pending |
 | SEC-01 | Phase 3 | Complete |
 | SEC-02 | Phase 5 | Pending |
-| SEC-03 | Phase 3 | Pending |
+| SEC-03 | Phase 3 | Complete |
 | SEC-04 | Phase 3, 5 | Complete |
 | SEC-05 | Phase 5 | Pending |
 | SEC-06 | Phase 6 | Pending |

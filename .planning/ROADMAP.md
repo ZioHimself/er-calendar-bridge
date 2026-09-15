@@ -138,7 +138,7 @@ Plans:
 5. Operator can run a single-account pilot sync against their own Google calendar
 6. Google OAuth is scoped to calendar only
 
-**Plans:** 4/6 plans executed
+**Plans:** 5/6 plans executed
 
 Plans:
 
@@ -154,7 +154,7 @@ Plans:
 **Wave 2** *(parallel — adapters)*
 
 - [x] 03-04-PLAN.md — Read-only CalDAV reader (SEC-01, SYNC-12/13)
-- [ ] 03-05-PLAN.md — Google Calendar writer + OAuth scope (SEC-03, SYNC-05/07)
+- [x] 03-05-PLAN.md — Google Calendar writer + OAuth scope (SEC-03, SYNC-05/07)
 
 **Wave 3**
 
@@ -232,7 +232,7 @@ Plans:
 | 1. Project scaffold and test harness | 4/4 | Complete | 2026-09-13 |
 | 01.1. CI pipeline (INSERTED) | 3/3 | Complete   | 2026-09-13 |
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
-| 3. CalDAV read, UID store, and Google sync loop | 4/6 | In Progress|  |
+| 3. CalDAV read, UID store, and Google sync loop | 5/6 | In Progress|  |
 | 4. Withhold notifications and audit log | 0/TBD | Not started | — |
 | 5. Docker packaging and local pilot deployment (v1.0) | 0/TBD | Not started | — |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |

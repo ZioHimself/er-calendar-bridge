@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Google-only pilot
 status: executing
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-09-15T15:56:30.000Z"
+stopped_at: Completed 03-05-PLAN.md
+last_updated: "2026-09-15T16:08:00.000Z"
 last_activity: 2026-09-15
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 4
-  completed_plans: 14
-  percent: 22
+  completed_plans: 15
+  percent: 23
 ---
 
 # Project State
@@ -27,11 +27,11 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 ## Current Position
 
 Phase: 03 (caldav-read-uid-store-and-google-sync-loop) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 Status: Ready to execute
-Last activity: 2026-09-15 — Completed 03-04 plan (read-only CalDAV reader)
+Last activity: 2026-09-15
 
-Progress: [██░░░░░░░░] 22%
+Progress: [██░░░░░░░░] 23%
 
 ## Performance Metrics
 
@@ -47,7 +47,9 @@ Progress: [██░░░░░░░░] 22%
 |-------|-------|-------|----------|
 | 01-project-scaffold-and-test-harness | 4 | 6 min | 2 min |
 | 02 | 3 | - | - |
-| 03-caldav-read-uid-store-and-google-sync-loop | 4 | 18 min | 4.5 min |
+| 03-caldav-read-uid-store-and-google-sync-loop | 5 | 30 min | 6 min |
+
+| Phase 03-caldav-read-uid-store-and-google-sync-loop P05 | 12 min | 2 tasks | 4 files |
 
 | Phase 03-caldav-read-uid-store-and-google-sync-loop P04 | 5 min | 3 tasks | 7 files |
 
@@ -82,6 +84,8 @@ Progress: [██░░░░░░░░] 22%
 - [Phase 03]: Tombstone href routing via source_href_snapshot table (D-05)
 - [Phase 03]: CalDavReader poll defaults to basic_sync; webdav_sync when stored in sync_state
 - [Phase 03]: Tombstone deleted[] entries require resolved source uid from href snapshot (D-05)
+- [Phase 03]: GOOGLE_CALENDAR_SCOPE uses full calendar scope; writer maps busy via summary Busy and opaque transparency
+- [Phase 03]: Google writer stores er.bridge_uuid in extendedProperties.private on create (D-14)
 
 ### Roadmap Evolution
 
@@ -113,5 +117,5 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-15T15:56:30.000Z
-Stopped at: Completed 03-04-PLAN.md
+Last session: 2026-09-15T16:08:00.000Z
+Stopped at: Completed 03-05-PLAN.md
