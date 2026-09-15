@@ -1,4 +1,6 @@
 import type { OutboundEvent } from '../domain/types/index.js';
+import type { MappingStore } from '../store/mapping-store.js';
+import type { SyncStateStore } from '../store/sync-state-store.js';
 
 export interface SyncDelta {
   changed: Array<{ href: string; data: string; etag?: string }>;
@@ -41,6 +43,9 @@ export interface SyncCycleResult {
 export interface SyncCycleDeps {
   caldav: CalDavReader;
   writer: CalendarWriter;
+  mappingStore: MappingStore;
+  syncStateStore: SyncStateStore;
+  calendarUrl: string;
   log: Logger;
   now?: () => Date;
 }
