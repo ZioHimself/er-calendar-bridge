@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Google-only pilot
 status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-09-15T15:47:30.000Z"
-last_activity: 2026-09-15 -- Completed 03-01 plan (spike + deps)
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-09-15T15:50:17.254Z"
+last_activity: 2026-09-15
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 4
-  completed_plans: 11
-  percent: 15
+  completed_plans: 12
+  percent: 18
 ---
 
 # Project State
@@ -27,11 +27,11 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 ## Current Position
 
 Phase: 03 (caldav-read-uid-store-and-google-sync-loop) — EXECUTING
-Plan: 2 of 6
-Status: Executing Phase 03
-Last activity: 2026-09-15 -- Completed 03-01 plan (spike + deps)
+Plan: 3 of 6
+Status: Ready to execute
+Last activity: 2026-09-15 -- Completed 03-02 plan (sync ports + env loader)
 
-Progress: [██░░░░░░░░] 15%
+Progress: [██░░░░░░░░] 18%
 
 ## Performance Metrics
 
@@ -47,12 +47,14 @@ Progress: [██░░░░░░░░] 15%
 |-------|-------|-------|----------|
 | 01-project-scaffold-and-test-harness | 4 | 6 min | 2 min |
 | 02 | 3 | - | - |
-| 03-caldav-read-uid-store-and-google-sync-loop | 1 | 8 min | 8 min |
+| 03-caldav-read-uid-store-and-google-sync-loop | 2 | 11 min | 5.5 min |
 
 **Recent Trend:**
 
 - Last 5 plans: 01-01 (3 min), 01-02 (1 min), 01-03 (1 min), 01-04 (1 min)
 - Trend: —
+
+| Phase 03-caldav-read-uid-store-and-google-sync-loop P02 | 3 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -70,6 +72,8 @@ Progress: [██░░░░░░░░] 15%
 - [2026-09-13]: Phase 4 split — withhold notifications separated from Microsoft Graph writer
 - [Phase 03]: Wave 0 default CalDAV degraded_mode basic_sync until live mailbox.org spike confirms webdav_sync
 - [Phase 03]: spike:mailbox-sync script is read-only (no tsdav write APIs)
+- [Phase 03]: Unknown env keys rejected via allowlist before Zod parse (runtime-safe with process.env)
+- [Phase 03]: Default sqlite path ./data/bridge.db when DATA_DIR and SQLITE_PATH unset
 
 ### Roadmap Evolution
 
@@ -101,5 +105,5 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-15T15:47:30.000Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-09-15T15:50:01.321Z
+Stopped at: Completed 03-02-PLAN.md

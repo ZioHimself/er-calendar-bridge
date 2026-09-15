@@ -35,7 +35,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 - [ ] **SEC-01**: Read-only mailbox.org access — never create, modify, or delete source events
 - [ ] **SEC-02**: Credentials encrypted at rest; never plaintext in config or version control
 - [ ] **SEC-03**: Google OAuth scoped to calendar only
-- [ ] **SEC-04**: Per-member credential isolation — no shared all-accounts secrets blob
+- [x] **SEC-04**: Per-member credential isolation — no shared all-accounts secrets blob
 - [ ] **SEC-05**: Secrets retrieval abstracted behind accessor (interim sops/age → target Vault/OpenBao)
 
 ### Test Harness
@@ -48,7 +48,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 
 ### Operations
 
-- [ ] **OPS-01**: Single-account pilot configuration (operator calendar only)
+- [x] **OPS-01**: Single-account pilot configuration (operator calendar only)
 - [ ] **OPS-02**: Host migration (laptop → server) is a deployment change, not a rewrite
 - [ ] **OPS-03**: Operator can see sync status, last success per account, and withheld events
 - [x] **OPS-04**: Minimum viable tooling — no disproportionate operational complexity
@@ -111,7 +111,7 @@ Deferred post-v1.1.
 | SEC-01 | Phase 3 | Pending |
 | SEC-02 | Phase 5 | Pending |
 | SEC-03 | Phase 3 | Pending |
-| SEC-04 | Phase 3, 5 | Pending |
+| SEC-04 | Phase 3, 5 | Complete |
 | SEC-05 | Phase 5 | Pending |
 | SEC-06 | Phase 6 | Pending |
 | TEST-01 | Phase 1 | Complete |
@@ -119,7 +119,7 @@ Deferred post-v1.1.
 | TEST-03 | Phase 1 | Complete |
 | TEST-04 | Phase 2 | Pending |
 | TEST-05 | Phase 01.1, 5 | Pending |
-| OPS-01 | Phase 3, 5 | Pending |
+| OPS-01 | Phase 3, 5 | Complete |
 | OPS-02 | Phase 5 | Pending |
 | OPS-03 | Phase 3, 4 | Pending |
 | OPS-04 | Phase 1, 01.1, 5 | Complete |
