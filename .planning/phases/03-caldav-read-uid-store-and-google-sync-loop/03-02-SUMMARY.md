@@ -70,7 +70,7 @@ completed: 2026-09-15
 1. **Task 1 (RED): Port types and failing env schema tests** — `36ff926` (test)
 2. **Task 2 (GREEN): Implement loadConfig and update .env.example** — `7fd2444` (feat)
 
-**Plan metadata:** pending (docs commit)
+**Plan metadata:** `fa48ddc` (docs: complete plan)
 
 ## Files Created/Modified
 
