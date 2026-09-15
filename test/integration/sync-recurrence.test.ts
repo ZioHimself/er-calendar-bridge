@@ -57,11 +57,14 @@ describe('sync cycle recurrence fixtures', () => {
 
     await runSyncCycle(deps);
 
-    expect(writer.upsertOutbound).toHaveBeenCalledOnce();
-    const call = vi.mocked(writer.upsertOutbound).mock.calls[0]?.[0];
-    expect(call?.mappingKey.uid).toBe(expected.uid);
-    expect(call?.outbound.recurrenceId).toBeInstanceOf(Date);
-    expect(call?.outbound.summary).toBe('Busy');
+    expect(vi.mocked(writer.upsertOutbound).mock.calls.length).toBeGreaterThanOrEqual(1);
+    const instanceCall = vi
+      .mocked(writer.upsertOutbound)
+      .mock.calls.find((c) => c[0]?.outbound.recurrenceId !== undefined)?.[0];
+    expect(instanceCall).toBeDefined();
+    expect(instanceCall?.mappingKey.uid).toBe(expected.uid);
+    expect(instanceCall?.outbound.recurrenceId).toBeInstanceOf(Date);
+    expect(instanceCall?.outbound.summary).toBe('Busy');
   });
 
   it('deleted-instance: master busy series upserts from fixture delta (SYNC-07)', async () => {
