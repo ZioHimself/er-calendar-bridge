@@ -32,7 +32,9 @@ export async function createCalDavClient(
   try {
     await client.login({ loadCollections: false, loadObjects: false });
   } catch (err) {
-    throw new Error(`CalDAV login failed: ${loginErrorMessage(err, config.mailboxAppPassword)}`);
+    throw new Error(`CalDAV login failed: ${loginErrorMessage(err, config.mailboxAppPassword)}`, {
+      cause: err,
+    });
   }
 
   return client;

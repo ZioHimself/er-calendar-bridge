@@ -55,6 +55,32 @@ npm test && npm run lint && npm run typecheck && npm run build
 
 CI uses Node.js 24 (see `engines.node` in `package.json`). Local Node 22 may show EBADENGINE warnings — use nvm or fnm to align with CI.
 
+## Operator pilot (Google sync)
+
+Configure environment variables (see `.env.example`):
+
+- `MAILBOX_CALDAV_URL`, `MAILBOX_CALENDAR_URL`, `MAILBOX_USERNAME`, `MAILBOX_APP_PASSWORD`
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`, `GOOGLE_CALENDAR_ID`
+- `SQLITE_PATH` or `DATA_DIR` (defaults to `./data/bridge.db`)
+- `SYNC_INTERVAL_SECONDS` (default `300`) for watch mode
+- `LOG_LEVEL` (default `info`)
+
+Run one sync cycle:
+
+```bash
+npm run build && node dist/index.js sync
+# or during development:
+tsx src/index.ts sync
+```
+
+Watch mode (repeats every `SYNC_INTERVAL_SECONDS`):
+
+```bash
+tsx src/index.ts sync --watch
+```
+
+Each cycle logs aggregate counts (`created`, `updated`, `cancelled`, `dropped`, `errors`) and persists `last_success_at` in SQLite for operator visibility (OPS-03). CalDAV horizon limits are described under [CalDAV horizon (SYNC-13)](#caldav-horizon-sync-13) below.
+
 ## Status
 
 Pre-implementation. **v1.0 pilot** validates CalDAV read → classify → wash → Google write, deletions, recurrence, and withhold notifications. **v1.1** adds Microsoft Graph.
