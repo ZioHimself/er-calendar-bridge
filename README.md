@@ -59,6 +59,10 @@ CI uses Node.js 24 (see `engines.node` in `package.json`). Local Node 22 may sho
 
 Pre-implementation. **v1.0 pilot** validates CalDAV read → classify → wash → Google write, deletions, recurrence, and withhold notifications. **v1.1** adds Microsoft Graph.
 
+## CalDAV horizon (SYNC-13)
+
+mailbox.org CalDAV typically returns events within roughly a **one-year** future window (community reports; exact limits can vary by account). The bridge does **not** apply an extra client-side far-future filter in Phase 3 — it syncs whatever CalDAV reports on each poll. Operators who need events beyond that horizon should plan mailbox.org-side visibility or accept that distant events may not appear in Google until CalDAV exposes them. See the [mailbox.org user forum](https://userforum-en.mailbox.org/topic/2526) for CalDAV collection URL and query discussion.
+
 ## Documentation
 
 Full requirements and architecture live in the NGO IT strategy repo:
