@@ -97,7 +97,10 @@ function formatValidationError(error: z.ZodError): string {
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
-  assertNoUnknownEnvKeys(env);
+  // SEC-04: reject typos in explicit env fixtures/tests; real process.env carries OS keys.
+  if (env !== process.env) {
+    assertNoUnknownEnvKeys(env);
+  }
   const picked = pickPilotEnv(env);
   const parsed = envSchema.safeParse(picked);
 

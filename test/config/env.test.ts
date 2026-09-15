@@ -63,6 +63,24 @@ describe('loadConfig', () => {
     ).toThrow(/UNKNOWN_PILOT_KEY/i);
   });
 
+  it('tolerates unrelated keys present in process.env', () => {
+    const pilot = minimalEnv();
+    const snapshot = { ...process.env };
+    Object.assign(process.env, pilot);
+    process.env.PATH = snapshot.PATH ?? '/usr/bin';
+    process.env.COMMAND_MODE = 'unix2003';
+    try {
+      expect(() => loadConfig()).not.toThrow();
+    } finally {
+      for (const key of Object.keys(process.env)) {
+        if (!(key in snapshot)) {
+          delete process.env[key];
+        }
+      }
+      Object.assign(process.env, snapshot);
+    }
+  });
+
   it('does not echo secrets in error messages', () => {
     try {
       loadConfig(minimalEnv({ MAILBOX_CALENDAR_URL: undefined }));

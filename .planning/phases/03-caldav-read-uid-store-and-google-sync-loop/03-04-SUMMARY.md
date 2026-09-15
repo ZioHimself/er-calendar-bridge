@@ -74,7 +74,7 @@ completed: 2026-09-15
 3. **Task 2 (GREEN): CalDavReader implementation** — `df4820e` (feat)
 4. **Task 3: SEC-01 guard and SYNC-13 README** — `f31f9e0` (feat)
 
-**Plan metadata:** `e032148` (docs: complete plan)
+**Plan metadata:** `184f974` (docs: complete plan)
 
 ## Files Created/Modified
 
