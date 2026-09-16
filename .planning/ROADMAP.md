@@ -175,11 +175,30 @@ Plans:
 3. IT/operator can inspect an audit log of withholding events
 4. Notification path works against the Google pilot sync loop (no Microsoft writer required)
 
-**Plans:** TBD
+**Plans:** 6 plans
 
 Plans:
 
-- [ ] TBD (run `/gsd:plan-phase 4` to break down)
+**Wave 0**
+
+- [ ] 04-01-PLAN.md — nodemailer gate + withhold transition TDD (SYNC-15, D-02/D-03/D-13/D-14)
+
+**Wave 1** *(parallel — no file overlap)*
+
+- [ ] 04-02-PLAN.md — SQLite audit + notify state store (SYNC-16, OPS-03, D-16)
+- [ ] 04-03-PLAN.md — SMTP/notify env + WithholdNotifier port (SYNC-14, SEC-04, D-05/D-12)
+
+**Wave 2** *(blocked on Wave 1 — 04-03)*
+
+- [ ] 04-04-PLAN.md — nodemailer withhold notifier + minimal template (SYNC-14, D-07/D-09–D-12)
+
+**Wave 3** *(blocked on Waves 0–2)*
+
+- [ ] 04-05-PLAN.md — sync loop wire + integration tests (SYNC-14–16, OPS-03, D-01–D-08)
+
+**Wave 4** *(blocked on 04-05)*
+
+- [ ] 04-06-PLAN.md — `audit list` CLI + README (SYNC-16, OPS-03, D-15)
 
 ### Phase 5: Docker packaging and local pilot deployment (v1.0)
 
@@ -233,7 +252,7 @@ Plans:
 | 01.1. CI pipeline (INSERTED) | 3/3 | Complete   | 2026-09-13 |
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
 | 3. CalDAV read, UID store, and Google sync loop | 6/6 | Complete   | 2026-09-15 |
-| 4. Withhold notifications and audit log | 0/TBD | Not started | — |
+| 4. Withhold notifications and audit log | 0/6 | Not started | — |
 | 5. Docker packaging and local pilot deployment (v1.0) | 0/TBD | Not started | — |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |
 
