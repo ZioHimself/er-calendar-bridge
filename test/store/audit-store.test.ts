@@ -142,7 +142,8 @@ describe('openAuditStore', () => {
       'b@example',
       'c@example',
     ]);
-    expect(filtered[0].recordedAt <= filtered[1].recordedAt).toBe(true);
+    expect(filtered).toHaveLength(2);
+    expect(filtered[0]!.recordedAt <= filtered[1]!.recordedAt).toBe(true);
 
     vi.useRealTimers();
   });
@@ -158,7 +159,9 @@ describe('openAuditStore', () => {
       error: 'smtp timeout',
     });
 
-    const row = store.listAuditSince('1970-01-01T00:00:00.000Z')[0];
+    const rows = store.listAuditSince('1970-01-01T00:00:00.000Z');
+    expect(rows).toHaveLength(1);
+    const row = rows[0]!;
     for (const key of Object.keys(row)) {
       expect(ALLOWED_AUDIT_ROW_KEYS.has(key)).toBe(true);
     }
@@ -191,7 +194,8 @@ describe('openAuditStore', () => {
       dedupKey: '44444444-4444-4444-8444-444444444444:busy:1',
     });
 
-    const audit = store.listAuditSince('1970-01-01T00:00:00.000Z')[0];
-    expect(audit.recurrenceId).toBeUndefined();
+    const auditRows = store.listAuditSince('1970-01-01T00:00:00.000Z');
+    expect(auditRows).toHaveLength(1);
+    expect(auditRows[0]!.recurrenceId).toBeUndefined();
   });
 });

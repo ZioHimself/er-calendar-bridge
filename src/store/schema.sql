@@ -28,3 +28,36 @@ CREATE TABLE IF NOT EXISTS source_href_snapshot (
   source_uid TEXT NOT NULL,
   etag TEXT NULL
 );
+
+-- withhold_notify_state: per source instance propagation episode (D-13).
+-- Master rows use recurrence_id '' (empty string).
+
+CREATE TABLE IF NOT EXISTS withhold_notify_state (
+  source_uid TEXT NOT NULL,
+  recurrence_id TEXT NOT NULL DEFAULT '',
+  bridge_uuid TEXT NOT NULL,
+  last_propagation TEXT NOT NULL,
+  episode INTEGER NOT NULL,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (source_uid, recurrence_id)
+);
+
+-- withhold_audit: append-only operator log (D-16 — no title/summary columns).
+
+CREATE TABLE IF NOT EXISTS withhold_audit (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  recorded_at TEXT NOT NULL,
+  source_uid TEXT NOT NULL,
+  recurrence_id TEXT NOT NULL DEFAULT '',
+  tier TEXT NOT NULL,
+  propagation TEXT NOT NULL,
+  notify_status TEXT NOT NULL CHECK (
+    notify_status IN ('sent', 'skipped', 'failed', 'disabled')
+  ),
+  dedup_key TEXT NOT NULL,
+  error TEXT NULL,
+  UNIQUE (dedup_key)
+);
+
+CREATE INDEX IF NOT EXISTS idx_withhold_audit_recorded_at
+  ON withhold_audit (recorded_at);
