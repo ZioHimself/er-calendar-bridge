@@ -211,17 +211,32 @@ Plans:
 **Success Criteria:**
 
 1. `docker compose up` starts a single-member pilot stack from documented instructions
-2. Each container receives only its own member credentials (Docker secrets or sops/age mount — no shared secrets file)
-3. SQLite UID map persists across container restarts via a named volume
+2. Each container receives only its own member credentials (Compose `secrets:` files under `secrets/<member>/` — no shared secrets file)
+3. SQLite UID map persists across container restarts via bind mount `./data/<member>` → `DATA_DIR`
 4. Configuration and secrets retrieval are abstracted so host migration is a deployment change, not a rewrite
 5. Operator can validate end-to-end v1.0 pilot: CalDAV read → classify → wash → Google write → notify
-6. CI workflow extended to build the Docker image successfully (no registry push required for pilot)
+6. CI workflow extended with `docker-build` job; image builds on all CI runs and pushes to public GHCR on `main`
 
-**Plans:** TBD
+**Plans:** 5 plans in 4 waves
 
 Plans:
 
-- [ ] TBD (run `/gsd:plan-phase 5` to break down)
+**Wave 0**
+
+- [ ] 05-01-PLAN.md — Secrets accessor TDD, gitignore, Alpine better-sqlite3 spike (SEC-05, SEC-02)
+
+**Wave 1** *(parallel after Wave 0 — no file overlap between 05-02 and 05-03)*
+
+- [ ] 05-02-PLAN.md — Multi-stage Dockerfile and .dockerignore (SYNC-17, TEST-05)
+- [ ] 05-03-PLAN.md — compose.yaml, .env.example, secrets onboarding (SYNC-17, OPS-01, SEC-04)
+
+**Wave 2** *(blocked on 05-02 and 05-03)*
+
+- [ ] 05-04-PLAN.md — CI docker-build GHCR publish + version 1.0.0 (TEST-05, OPS-04)
+
+**Wave 3** *(blocked on 05-04)*
+
+- [ ] 05-05-PLAN.md — Pilot/migration/offboarding runbooks, README, validation gate (SYNC-18, OPS-02)
 
 ### Phase 6: Microsoft Graph writer (v1.1)
 
@@ -253,7 +268,7 @@ Plans:
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
 | 3. CalDAV read, UID store, and Google sync loop | 6/6 | Complete   | 2026-09-15 |
 | 4. Withhold notifications and audit log | 6/6 | Complete   | 2026-09-16 |
-| 5. Docker packaging and local pilot deployment (v1.0) | 0/TBD | Not started | — |
+| 5. Docker packaging and local pilot deployment (v1.0) | 0/5 | Not started | — |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |
 
 ---
