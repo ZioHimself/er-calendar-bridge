@@ -1,11 +1,102 @@
 import { randomUUID } from 'node:crypto';
 import { parseIcsToSourceEvents } from '../adapters/ical/index.js';
 import { processSourceEvent } from '../domain/process-source-event.js';
-import type { SourceEvent } from '../domain/types/index.js';
+import type { ProcessedSourceEvent, SourceEvent } from '../domain/types/index.js';
+import type { NotifyStatus } from '../store/audit-store.js';
+import {
+  computeWithholdTransition,
+  type WithholdPropagation,
+} from './withhold-transition.js';
 import type { SyncCycleDeps, SyncCycleResult } from './types.js';
 
 function isRecurringInstance(source: SourceEvent): boolean {
   return source.recurrenceId !== undefined;
+}
+
+function propagationFromState(
+  lastPropagation: string | undefined,
+): WithholdPropagation | undefined {
+  if (
+    lastPropagation === 'full' ||
+    lastPropagation === 'busy' ||
+    lastPropagation === 'drop'
+  ) {
+    return lastPropagation;
+  }
+  return undefined;
+}
+
+async function handleWithholdSideEffects(
+  deps: SyncCycleDeps,
+  source: SourceEvent,
+  processed: ProcessedSourceEvent,
+  bridgeUuid: string,
+): Promise<void> {
+  const state = deps.auditStore.getNotifyState({
+    uid: source.uid,
+    recurrenceId: source.recurrenceId,
+  });
+
+  const transition = computeWithholdTransition({
+    previousPropagation: propagationFromState(state?.lastPropagation),
+    currentPropagation: processed.propagation,
+    episode: state?.episode ?? 0,
+    bridgeUuid,
+  });
+
+  if (!transition.shouldRecord) {
+    if (processed.propagation === 'full') {
+      deps.auditStore.upsertNotifyState({
+        uid: source.uid,
+        recurrenceId: source.recurrenceId,
+        bridgeUuid,
+        lastPropagation: 'full',
+        episode: transition.nextEpisode,
+      });
+    }
+    return;
+  }
+
+  let notifyStatus: NotifyStatus;
+  let errorMessage: string | undefined;
+
+  if (!deps.notifyEnabled) {
+    notifyStatus = 'disabled';
+  } else {
+    try {
+      const notifyResult = await deps.withholdNotifier.notifyWithhold({
+        tier: processed.tier,
+        propagation: processed.propagation,
+        dedupKey: transition.dedupKey!,
+      });
+      notifyStatus = notifyResult.status === 'sent' ? 'sent' : 'failed';
+    } catch (err) {
+      deps.log.error(
+        { uid: source.uid, recurrenceId: source.recurrenceId, err },
+        'withhold notify failed',
+      );
+      notifyStatus = 'failed';
+      errorMessage = err instanceof Error ? err.message : String(err);
+    }
+  }
+
+  deps.auditStore.appendAuditRow({
+    uid: source.uid,
+    recurrenceId: source.recurrenceId,
+    tier: processed.tier,
+    propagation: processed.propagation,
+    notifyStatus,
+    dedupKey: transition.dedupKey!,
+    error: errorMessage,
+  });
+
+  deps.auditStore.upsertNotifyState({
+    uid: source.uid,
+    recurrenceId: source.recurrenceId,
+    bridgeUuid,
+    lastPropagation: transition.nextPropagation,
+    episode: transition.nextEpisode,
+  });
 }
 
 async function handleOutboundEvent(
@@ -21,6 +112,13 @@ async function handleOutboundEvent(
     recurrenceId: source.recurrenceId,
   });
 
+  const notifyState = deps.auditStore.getNotifyState({
+    uid: source.uid,
+    recurrenceId: source.recurrenceId,
+  });
+  const bridgeUuid =
+    mapping?.bridgeUuid ?? notifyState?.bridgeUuid ?? randomUUID();
+
   if (processed.propagation === 'drop') {
     result.dropped += 1;
     if (mapping?.status === 'active') {
@@ -34,6 +132,7 @@ async function handleOutboundEvent(
       });
       result.cancelled += 1;
     }
+    await handleWithholdSideEffects(deps, source, processed, bridgeUuid);
     return;
   }
 
@@ -43,7 +142,6 @@ async function handleOutboundEvent(
 
   const existingGoogleEventId =
     mapping?.status === 'active' ? mapping.googleEventId : undefined;
-  const bridgeUuid = mapping?.bridgeUuid ?? randomUUID();
 
   const { googleEventId } = await deps.writer.upsertOutbound({
     mappingKey: {
@@ -70,6 +168,8 @@ async function handleOutboundEvent(
     lastSourceEtag: etag,
     caldavHref: href,
   });
+
+  await handleWithholdSideEffects(deps, source, processed, bridgeUuid);
 }
 
 async function handleDeletedTombstone(

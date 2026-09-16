@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { runSyncCycle } from '../../src/sync/run-sync-cycle.js';
 import { loadFixture } from '../helpers/load-fixture.js';
+import { openAuditStore } from '../../src/store/audit-store.js';
 import { openMappingStore } from '../../src/store/mapping-store.js';
 import { openSyncStateStore } from '../../src/store/sync-state-store.js';
 import type {
@@ -21,16 +22,42 @@ const silentLogger: Logger = {
 describe('sync cycle recurrence fixtures', () => {
   let mappingStore: ReturnType<typeof openMappingStore>;
   let syncStateStore: ReturnType<typeof openSyncStateStore>;
+  let auditStore: ReturnType<typeof openAuditStore>;
 
   beforeEach(() => {
     mappingStore = openMappingStore(':memory:');
     syncStateStore = openSyncStateStore(':memory:');
+    auditStore = openAuditStore(':memory:');
   });
 
   afterEach(() => {
     mappingStore.close();
     syncStateStore.close();
+    auditStore.close();
   });
+
+  const withholdNotifier = {
+    notifyWithhold: vi
+      .fn<import('../../src/notify/types.js').WithholdNotifier['notifyWithhold']>()
+      .mockResolvedValue({ status: 'sent' }),
+  };
+
+  function baseDeps(
+    caldav: CalDavReader,
+    writer: CalendarWriter,
+  ): SyncCycleDeps {
+    return {
+      caldav,
+      writer,
+      mappingStore,
+      syncStateStore,
+      auditStore,
+      withholdNotifier,
+      notifyEnabled: true,
+      calendarUrl: CALENDAR_URL,
+      log: silentLogger,
+    };
+  }
 
   it('modified-instance: writer upsert uses recurrence mapping key (SYNC-07)', async () => {
     const { ics, expected } = await loadFixture('recurrence', 'modified-instance');
@@ -46,16 +73,7 @@ describe('sync cycle recurrence fixtures', () => {
       cancel: vi.fn(),
     };
 
-    const deps: SyncCycleDeps = {
-      caldav,
-      writer,
-      mappingStore,
-      syncStateStore,
-      calendarUrl: CALENDAR_URL,
-      log: silentLogger,
-    };
-
-    await runSyncCycle(deps);
+    await runSyncCycle(baseDeps(caldav, writer));
 
     expect(vi.mocked(writer.upsertOutbound).mock.calls.length).toBeGreaterThanOrEqual(1);
     const instanceCall = vi
@@ -81,16 +99,7 @@ describe('sync cycle recurrence fixtures', () => {
       cancel: vi.fn(),
     };
 
-    const deps: SyncCycleDeps = {
-      caldav,
-      writer,
-      mappingStore,
-      syncStateStore,
-      calendarUrl: CALENDAR_URL,
-      log: silentLogger,
-    };
-
-    await runSyncCycle(deps);
+    await runSyncCycle(baseDeps(caldav, writer));
 
     expect(writer.upsertOutbound).toHaveBeenCalledOnce();
     const call = vi.mocked(writer.upsertOutbound).mock.calls[0]?.[0];
@@ -113,16 +122,7 @@ describe('sync cycle recurrence fixtures', () => {
       cancel: vi.fn(),
     };
 
-    const deps: SyncCycleDeps = {
-      caldav,
-      writer,
-      mappingStore,
-      syncStateStore,
-      calendarUrl: CALENDAR_URL,
-      log: silentLogger,
-    };
-
-    await runSyncCycle(deps);
+    await runSyncCycle(baseDeps(caldav, writer));
 
     expect(writer.upsertOutbound).toHaveBeenCalledOnce();
     expect(

@@ -1,4 +1,6 @@
 import type { OutboundEvent } from '../domain/types/index.js';
+import type { WithholdNotifier } from '../notify/types.js';
+import type { AuditStore } from '../store/audit-store.js';
 import type { MappingStore } from '../store/mapping-store.js';
 import type { SyncStateStore } from '../store/sync-state-store.js';
 
@@ -45,6 +47,10 @@ export interface SyncCycleDeps {
   writer: CalendarWriter;
   mappingStore: MappingStore;
   syncStateStore: SyncStateStore;
+  auditStore: AuditStore;
+  withholdNotifier: WithholdNotifier;
+  /** When false, audit records notify_status disabled without calling SMTP. */
+  notifyEnabled: boolean;
   calendarUrl: string;
   log: Logger;
   now?: () => Date;

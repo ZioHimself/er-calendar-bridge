@@ -34,6 +34,19 @@ function sharedSqlitePath(): { sqlitePath: string; cleanup: () => void } {
   };
 }
 
+function createMockWithholdNotifier(
+  impl?: WithholdNotifier['notifyWithhold'],
+): WithholdNotifier & {
+  notifyWithhold: ReturnType<typeof vi.fn<WithholdNotifier['notifyWithhold']>>;
+} {
+  const notifyWithhold =
+    impl ??
+    vi.fn<WithholdNotifier['notifyWithhold']>().mockResolvedValue({
+      status: 'sent',
+    });
+  return { notifyWithhold };
+}
+
 function buildDeps(overrides: {
   caldav: CalDavReader;
   writer: CalendarWriter;
@@ -52,10 +65,7 @@ function buildDeps(overrides: {
   const syncStateStore = openSyncStateStore(sqlitePath);
   const auditStore = openAuditStore(sqlitePath);
   const withholdNotifier =
-    overrides.withholdNotifier ??
-    vi.fn<WithholdNotifier['notifyWithhold']>().mockResolvedValue({
-      status: 'sent',
-    });
+    overrides.withholdNotifier ?? createMockWithholdNotifier();
 
   const deps: SyncCycleDeps = {
     caldav: overrides.caldav,
@@ -96,9 +106,7 @@ describe('sync cycle acceptance', () => {
   function baseWithholdDeps(
     caldav: CalDavReader,
     writer: CalendarWriter,
-    withholdNotifier: WithholdNotifier = vi
-      .fn<WithholdNotifier['notifyWithhold']>()
-      .mockResolvedValue({ status: 'sent' }),
+    withholdNotifier: WithholdNotifier = createMockWithholdNotifier(),
   ): SyncCycleDeps {
     return {
       caldav,
@@ -309,15 +317,8 @@ describe('sync cycle acceptance', () => {
 });
 
 describe('sync cycle withhold', () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it('withhold: internal first cycle notifies once; second unchanged busy does not (D-02, D-14)', async () => {
     const { ics } = await loadFixture('internal', 'team-sync');
-    const withholdNotifier = vi
-      .fn<WithholdNotifier['notifyWithhold']>()
-      .mockResolvedValue({ status: 'sent' });
 
     const caldav: CalDavReader = {
       poll: vi
@@ -336,13 +337,16 @@ describe('sync cycle withhold', () => {
       cancel: vi.fn(),
     };
 
-    const { deps, cleanup } = buildDeps({ caldav, writer, withholdNotifier });
+    const { deps, cleanup } = buildDeps({ caldav, writer });
 
     await runSyncCycle(deps);
     await runSyncCycle(deps);
 
-    expect(withholdNotifier).toHaveBeenCalledTimes(1);
-    expect(withholdNotifier.mock.calls[0]?.[0].propagation).toBe('busy');
+    const notifyWithhold = (
+      deps.withholdNotifier as ReturnType<typeof createMockWithholdNotifier>
+    ).notifyWithhold;
+    expect(notifyWithhold).toHaveBeenCalledTimes(1);
+    expect(notifyWithhold.mock.calls[0]?.[0].propagation).toBe('busy');
 
     deps.auditStore.close();
     deps.mappingStore.close();
@@ -356,9 +360,7 @@ describe('sync cycle withhold', () => {
       'SUMMARY:Weekly team sync',
       'SUMMARY:Weekly team sync (renamed)',
     );
-    const withholdNotifier = vi
-      .fn<WithholdNotifier['notifyWithhold']>()
-      .mockResolvedValue({ status: 'sent' });
+    const withholdNotifier = createMockWithholdNotifier();
 
     const caldav: CalDavReader = {
       poll: vi
@@ -382,7 +384,7 @@ describe('sync cycle withhold', () => {
     await runSyncCycle(deps);
     await runSyncCycle(deps);
 
-    expect(withholdNotifier).toHaveBeenCalledTimes(1);
+    expect(withholdNotifier.notifyWithhold).toHaveBeenCalledTimes(1);
 
     deps.auditStore.close();
     deps.mappingStore.close();
@@ -392,9 +394,7 @@ describe('sync cycle withhold', () => {
 
   it('withhold: sensitive drop first sight notifies and audits drop dedup key (D-01)', async () => {
     const { ics, expected } = await loadFixture('sensitive', 'hr-review');
-    const withholdNotifier = vi
-      .fn<WithholdNotifier['notifyWithhold']>()
-      .mockResolvedValue({ status: 'sent' });
+    const withholdNotifier = createMockWithholdNotifier();
 
     const caldav: CalDavReader = {
       poll: vi.fn().mockResolvedValueOnce({
@@ -415,8 +415,8 @@ describe('sync cycle withhold', () => {
 
     await runSyncCycle(deps);
 
-    expect(withholdNotifier).toHaveBeenCalledTimes(1);
-    expect(withholdNotifier.mock.calls[0]?.[0].propagation).toBe('drop');
+    expect(withholdNotifier.notifyWithhold).toHaveBeenCalledTimes(1);
+    expect(withholdNotifier.notifyWithhold.mock.calls[0]?.[0].propagation).toBe('drop');
 
     const rows = auditStore.listAuditSince('1970-01-01T00:00:00.000Z');
     expect(rows).toHaveLength(1);
@@ -436,9 +436,7 @@ describe('sync cycle withhold', () => {
       'CATEGORIES:ER-PUBLIC',
       'CATEGORIES:ER-INTERNAL',
     );
-    const withholdNotifier = vi
-      .fn<WithholdNotifier['notifyWithhold']>()
-      .mockResolvedValue({ status: 'sent' });
+    const withholdNotifier = createMockWithholdNotifier();
 
     const caldav: CalDavReader = {
       poll: vi
@@ -467,8 +465,8 @@ describe('sync cycle withhold', () => {
     await runSyncCycle(deps);
     await runSyncCycle(deps);
 
-    expect(withholdNotifier).toHaveBeenCalledTimes(1);
-    expect(withholdNotifier.mock.calls[0]?.[0].propagation).toBe('busy');
+    expect(withholdNotifier.notifyWithhold).toHaveBeenCalledTimes(1);
+    expect(withholdNotifier.notifyWithhold.mock.calls[0]?.[0].propagation).toBe('busy');
 
     deps.auditStore.close();
     deps.mappingStore.close();
@@ -482,9 +480,7 @@ describe('sync cycle withhold', () => {
       'CATEGORIES:ER-PUBLIC',
       'CATEGORIES:ER-INTERNAL',
     );
-    const withholdNotifier = vi
-      .fn<WithholdNotifier['notifyWithhold']>()
-      .mockResolvedValue({ status: 'sent' });
+    const withholdNotifier = createMockWithholdNotifier();
 
     const caldav: CalDavReader = {
       poll: vi
@@ -518,7 +514,7 @@ describe('sync cycle withhold', () => {
     await runSyncCycle(deps);
     await runSyncCycle(deps);
 
-    expect(withholdNotifier).toHaveBeenCalledTimes(2);
+    expect(withholdNotifier.notifyWithhold).toHaveBeenCalledTimes(2);
 
     deps.auditStore.close();
     deps.mappingStore.close();
@@ -528,9 +524,7 @@ describe('sync cycle withhold', () => {
 
   it('withhold: deleted tombstone does not call notifier (D-04)', async () => {
     const uid = 'team-sync-2026@er.example';
-    const withholdNotifier = vi
-      .fn<WithholdNotifier['notifyWithhold']>()
-      .mockResolvedValue({ status: 'sent' });
+    const withholdNotifier = createMockWithholdNotifier();
 
     const { deps, mappingStore, cleanup } = buildDeps({
       caldav: {
@@ -554,7 +548,7 @@ describe('sync cycle withhold', () => {
 
     await runSyncCycle(deps);
 
-    expect(withholdNotifier).not.toHaveBeenCalled();
+    expect(withholdNotifier.notifyWithhold).not.toHaveBeenCalled();
 
     deps.auditStore.close();
     mappingStore.close();
@@ -564,9 +558,7 @@ describe('sync cycle withhold', () => {
 
   it('withhold: notify disabled records audit disabled without SMTP (D-05, D-16)', async () => {
     const { ics } = await loadFixture('internal', 'team-sync');
-    const withholdNotifier = vi
-      .fn<WithholdNotifier['notifyWithhold']>()
-      .mockResolvedValue({ status: 'sent' });
+    const withholdNotifier = createMockWithholdNotifier();
 
     const caldav: CalDavReader = {
       poll: vi.fn().mockResolvedValueOnce({
@@ -588,7 +580,7 @@ describe('sync cycle withhold', () => {
 
     await runSyncCycle(deps);
 
-    expect(withholdNotifier).not.toHaveBeenCalled();
+    expect(withholdNotifier.notifyWithhold).not.toHaveBeenCalled();
     const rows = auditStore.listAuditSince('1970-01-01T00:00:00.000Z');
     expect(rows).toHaveLength(1);
     expect(rows[0]?.notifyStatus).toBe('disabled');
@@ -601,9 +593,11 @@ describe('sync cycle withhold', () => {
 
   it('withhold: notifier rejection does not increment cycle errors (D-08)', async () => {
     const { ics } = await loadFixture('internal', 'team-sync');
-    const withholdNotifier = vi
-      .fn<WithholdNotifier['notifyWithhold']>()
-      .mockRejectedValue(new Error('smtp down'));
+    const withholdNotifier = createMockWithholdNotifier(
+      vi.fn<WithholdNotifier['notifyWithhold']>().mockRejectedValue(
+        new Error('smtp down'),
+      ),
+    );
 
     const caldav: CalDavReader = {
       poll: vi.fn().mockResolvedValueOnce({
