@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Google-only pilot
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-09-16T08:57:30.000Z"
-last_activity: 2026-09-16 -- Completed 04-01 withhold transition TDD
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-09-16T09:00:00.000Z"
+last_activity: 2026-09-16 -- Completed 04-03 notify env and WithholdNotifier port
 progress:
   total_phases: 7
   completed_phases: 1
@@ -27,11 +27,11 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 ## Current Position
 
 Phase: 04
-Plan: 02
+Plan: 03
 Status: Ready to execute
-Last activity: 2026-09-16 -- Completed 04-01 withhold transition TDD
+Last activity: 2026-09-16 -- Completed 04-03 notify env and WithholdNotifier port
 
-Progress: [█░░░░░░░░░] 17%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
@@ -65,6 +65,8 @@ Progress: [█░░░░░░░░░] 17%
 
 | Phase 04-microsoft-graph-writer-and-withhold-notifications P01 | 3 min | 3 tasks | 4 files |
 
+| Phase 04-microsoft-graph-writer-and-withhold-notifications P03 | 5 min | 2 tasks | 4 files |
+
 ## Accumulated Context
 
 ### Decisions
@@ -91,6 +93,8 @@ Progress: [█░░░░░░░░░] 17%
 - [Phase 03]: Google writer stores er.bridge_uuid in extendedProperties.private on create (D-14)
 - [Phase 04]: Episode increments only on full→withhold; first withhold from undefined starts at 1
 - [Phase 04]: Dedup key format bridgeUuid:propagation:episode per D-13
+- [Phase 04]: D-05 SMTP_HOST, SMTP_PORT, SMTP_FROM required only when NOTIFY_OWNER_EMAIL is set
+- [Phase 04]: WithholdNotifier params limited to tier, propagation, dedupKey (D-09)
 
 ### Roadmap Evolution
 
@@ -122,5 +126,5 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-16T08:57:30.000Z
+Last session: 2026-09-16T08:59:42.725Z
 Stopped at: Completed 04-01-PLAN.md
