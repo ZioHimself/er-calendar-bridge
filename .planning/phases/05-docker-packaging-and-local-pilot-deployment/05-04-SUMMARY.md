@@ -66,7 +66,7 @@ completed: 2026-09-16
 1. **Task 1: Bump package version for GHCR semver tags** - `0aba76e` (feat)
 2. **Task 2: Add docker-build job to CI** - `bbfc278` (feat)
 
-**Plan metadata:** see final docs commit (docs: complete plan)
+**Plan metadata:** `4a85943` (docs: complete plan)
 
 ## Files Created/Modified
 
