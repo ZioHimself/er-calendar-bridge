@@ -1,0 +1,10 @@
+# Optional overlay when NOTIFY_OWNER_EMAIL is set (withhold SMTP). Deploy:
+#   docker compose -f compose.yaml -f compose.notify.yaml up -d
+services:
+  bridge-operator:
+    secrets:
+      - smtp_password
+
+secrets:
+  smtp_password:
+    file: ./secrets/operator/smtp_password
