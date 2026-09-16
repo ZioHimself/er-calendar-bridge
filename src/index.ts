@@ -2,6 +2,8 @@ import { fileURLToPath } from 'node:url';
 import pino from 'pino';
 import { createCalDavClient, createCalDavReader } from './adapters/caldav/index.js';
 import { loadConfig } from './config/env.js';
+import { createWithholdNotifier } from './notify/withhold-notifier.js';
+import { openAuditStore } from './store/audit-store.js';
 import { openMappingStore } from './store/mapping-store.js';
 import { openSyncStateStore } from './store/sync-state-store.js';
 import { runSyncCycle } from './sync/run-sync-cycle.js';
@@ -27,6 +29,8 @@ function createLogger(logLevel: string): pino.Logger {
         'mailboxAppPassword',
         'googleRefreshToken',
         'googleClientSecret',
+        'SMTP_PASSWORD',
+        'smtpPassword',
         'password',
         'refresh_token',
         'client_secret',
@@ -40,6 +44,10 @@ async function runOneSyncCycle(log: pino.Logger): Promise<void> {
   const config = loadConfig();
   const mappingStore = openMappingStore(config.sqlitePath);
   const syncStateStore = openSyncStateStore(config.sqlitePath);
+  const auditStore = openAuditStore(config.sqlitePath);
+  const notifyEnabled =
+    config.notifyOwnerEmail !== undefined && config.notifyOwnerEmail.length > 0;
+  const withholdNotifier = createWithholdNotifier(config);
 
   try {
     const caldavClient = await createCalDavClient(config);
@@ -62,6 +70,9 @@ async function runOneSyncCycle(log: pino.Logger): Promise<void> {
       writer,
       mappingStore,
       syncStateStore,
+      auditStore,
+      withholdNotifier,
+      notifyEnabled,
       calendarUrl: config.calendarUrl,
       log,
     });
@@ -81,6 +92,7 @@ async function runOneSyncCycle(log: pino.Logger): Promise<void> {
   } finally {
     mappingStore.close();
     syncStateStore.close();
+    auditStore.close();
   }
 }
 

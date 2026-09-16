@@ -35,7 +35,7 @@ function sharedSqlitePath(): { sqlitePath: string; cleanup: () => void } {
 }
 
 function createMockWithholdNotifier(
-  impl?: WithholdNotifier['notifyWithhold'],
+  impl?: ReturnType<typeof vi.fn<WithholdNotifier['notifyWithhold']>>,
 ): WithholdNotifier & {
   notifyWithhold: ReturnType<typeof vi.fn<WithholdNotifier['notifyWithhold']>>;
 } {
