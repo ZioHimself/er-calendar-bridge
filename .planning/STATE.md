@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Google-only pilot
 status: executing
-stopped_at: Phase 04 context gathered
-last_updated: "2026-09-16T08:53:58.828Z"
-last_activity: 2026-09-16 -- Phase 04 planning complete
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-09-16T08:57:30.000Z"
+last_activity: 2026-09-16 -- Completed 04-01 withhold transition TDD
 progress:
   total_phases: 7
   completed_phases: 1
@@ -27,11 +27,11 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 ## Current Position
 
 Phase: 04
-Plan: Not started
+Plan: 02
 Status: Ready to execute
-Last activity: 2026-09-16 -- Phase 04 planning complete
+Last activity: 2026-09-16 -- Completed 04-01 withhold transition TDD
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 17%
 
 ## Performance Metrics
 
@@ -63,6 +63,8 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase 03-caldav-read-uid-store-and-google-sync-loop P02 | 3 min | 2 tasks | 4 files |
 
+| Phase 04-microsoft-graph-writer-and-withhold-notifications P01 | 3 min | 3 tasks | 4 files |
+
 ## Accumulated Context
 
 ### Decisions
@@ -87,6 +89,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 03]: Tombstone deleted[] entries require resolved source uid from href snapshot (D-05)
 - [Phase 03]: GOOGLE_CALENDAR_SCOPE uses full calendar scope; writer maps busy via summary Busy and opaque transparency
 - [Phase 03]: Google writer stores er.bridge_uuid in extendedProperties.private on create (D-14)
+- [Phase 04]: Episode increments only on full→withhold; first withhold from undefined starts at 1
+- [Phase 04]: Dedup key format bridgeUuid:propagation:episode per D-13
 
 ### Roadmap Evolution
 
@@ -118,5 +122,5 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-16T08:43:23.477Z
-Stopped at: Phase 04 context gathered
+Last session: 2026-09-16T08:57:30.000Z
+Stopped at: Completed 04-01-PLAN.md

@@ -25,7 +25,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 - [x] **SYNC-12**: Deletions on source propagate as deletions, not stale copies
 - [x] **SYNC-13**: Scheduling window accounts for mailbox.org ~1-year future-event CalDAV limit
 - [ ] **SYNC-14**: Notify event owners when content is withheld or downgraded
-- [ ] **SYNC-15**: De-duplicate withhold notifications (stable key + suppression window)
+- [x] **SYNC-15**: De-duplicate withhold notifications (stable key + suppression window)
 - [ ] **SYNC-16**: IT/operator access to audit record of withholding events
 - [ ] **SYNC-17**: Docker image with Compose orchestration — one container per synced member
 - [ ] **SYNC-18**: Offboarding support — revoke credential, remove container, delete propagated copies
@@ -103,7 +103,7 @@ Deferred post-v1.1.
 | SYNC-12 | Phase 3 | Complete |
 | SYNC-13 | Phase 3 | Complete |
 | SYNC-14 | Phase 4 | Pending |
-| SYNC-15 | Phase 4 | Pending |
+| SYNC-15 | Phase 4 | Complete |
 | SYNC-16 | Phase 4 | Pending |
 | SYNC-17 | Phase 5 | Pending |
 | SYNC-18 | Phase 5 | Pending |
