@@ -31,7 +31,7 @@ Busy-blocks retain start, end, stable ID, and generic label only — title, desc
 
 ## Deployment
 
-Docker image, orchestrated with Docker Compose — one container per synced member, each with only that member's secrets.
+Docker image from **public GHCR**, orchestrated with Docker Compose — one container per synced member, each with only that member's secrets. SQLite persists on the host via bind mount `./data/<member>` (not a named Docker volume).
 
 | Phase | Host | Scope |
 |-------|------|-------|
@@ -39,25 +39,36 @@ Docker image, orchestrated with Docker Compose — one container per synced memb
 | v1.1 | Same or server | Add Microsoft Graph write path |
 | Production | Organisation server | Active schedulers, then others |
 
-Secrets: Docker secrets / `sops`+`age` (interim) → Vault or OpenBao (target).
+**Operator runbooks:**
+
+- [Docker pilot, migration, Google re-auth](docs/runbooks/docker-pilot.md) — `IMAGE=ghcr.io/europeanresolve/er-calendar-bridge:1.0.0`, `secrets/operator/*`, `docker compose up -d`
+- [Offboarding (SYNC-18)](docs/runbooks/offboarding.md) — revoke credentials, `compose down`, optional `bridge.db` backup
+
+Secrets: Compose file mounts under `secrets/<member>/` for v1.0 (gitignored). **Vault / OpenBao** is the target for server-era deployments (documented follow-up, D-23).
 
 ## Development
 
 This project uses trunk-based development: push directly to `main`. Pull requests are not required for now, though CI also runs on `pull_request` targeting `main` when used.
 
-GitHub Actions runs on every push to `main` with four parallel jobs: test, lint, typecheck, and build.
+GitHub Actions runs on every push to `main` and on pull requests targeting `main` with **five** jobs: `test`, `lint`, `typecheck`, `build`, and **`docker-build`**. The image job runs after the four npm jobs succeed; it builds on every workflow run and **pushes to public GHCR** only on pushes to `main` (semver tag from `package.json`, currently `1.0.0`).
+
+If you enable **branch protection** on `main`, mark all five jobs — including **`docker-build`** — as required status checks so trunk commits cannot merge with a broken image (D-19). Direct pushes to `main` still rely on CI going green before you push.
 
 Before pushing, run the local gate:
 
 ```bash
 npm test && npm run lint && npm run typecheck && npm run build
+# optional when changing Docker packaging:
+docker build -t er-calendar-bridge:local .
 ```
 
 CI uses Node.js 24 (see `engines.node` in `package.json`). Local Node 22 may show EBADENGINE warnings — use nvm or fnm to align with CI.
 
 ## Operator pilot (Google sync)
 
-Configure environment variables (see `.env.example`):
+**Docker (recommended for v1.0):** follow [docs/runbooks/docker-pilot.md](docs/runbooks/docker-pilot.md).
+
+**Host CLI (development):** configure environment variables (see `.env.example`):
 
 - `MAILBOX_CALDAV_URL`, `MAILBOX_CALENDAR_URL`, `MAILBOX_USERNAME`, `MAILBOX_APP_PASSWORD`
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`, `GOOGLE_CALENDAR_ID`

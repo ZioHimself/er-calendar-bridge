@@ -22,7 +22,7 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 - [x] **Phase 2: Classification, washing, and iCal domain logic** — Fail-closed tier rules and busy-block construction (completed 2026-09-14)
 - [x] **Phase 3: CalDAV read, UID store, and Google sync loop** — mailbox.org read, SQLite mapping, Google pilot sync (completed 2026-09-15)
 - [x] **Phase 4: Withhold notifications and audit log** — SMTP owner alerts, de-duplication, IT audit record (completed 2026-09-16)
-- [ ] **Phase 5: Docker packaging and local pilot deployment (v1.0)** — Image, Compose, secrets, Google-only operator laptop pilot
+- [x] **Phase 5: Docker packaging and local pilot deployment (v1.0)** — Image, Compose, secrets, Google-only operator laptop pilot
 - [ ] **Phase 6: Microsoft Graph writer (v1.1)** — Outlook write path mirroring Google; dual UID mapping
 
 ## Phase Details
@@ -217,7 +217,7 @@ Plans:
 5. Operator can validate end-to-end v1.0 pilot: CalDAV read → classify → wash → Google write → notify
 6. CI workflow extended with `docker-build` job; image builds on all CI runs and pushes to public GHCR on `main`
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans executed
 
 Plans:
 
@@ -236,7 +236,7 @@ Plans:
 
 **Wave 3** *(blocked on 05-04)*
 
-- [ ] 05-05-PLAN.md — Pilot/migration/offboarding runbooks, README, validation gate (SYNC-18, OPS-02)
+- [x] 05-05-PLAN.md — Pilot/migration/offboarding runbooks, README, validation gate (SYNC-18, OPS-02)
 
 ### Phase 6: Microsoft Graph writer (v1.1)
 
@@ -268,7 +268,7 @@ Plans:
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
 | 3. CalDAV read, UID store, and Google sync loop | 6/6 | Complete   | 2026-09-15 |
 | 4. Withhold notifications and audit log | 6/6 | Complete   | 2026-09-16 |
-| 5. Docker packaging and local pilot deployment (v1.0) | 4/5 | In Progress|  |
+| 5. Docker packaging and local pilot deployment (v1.0) | 5/5 | Complete   | 2026-09-16 |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |
 
 ---
