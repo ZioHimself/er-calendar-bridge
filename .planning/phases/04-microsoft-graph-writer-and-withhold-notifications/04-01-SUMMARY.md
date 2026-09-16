@@ -63,7 +63,7 @@ completed: 2026-09-16
 2. **Task 2 (RED): Failing withhold-transition tests** — `23905c2` (test)
 3. **Task 3 (GREEN): Implement computeWithholdTransition** — `374399f` (feat)
 
-**Plan metadata:** (docs commit follows)
+**Plan metadata:** `1f6a50d` (docs: complete plan)
 
 ## Files Created/Modified
 
