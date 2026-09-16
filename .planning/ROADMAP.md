@@ -217,13 +217,13 @@ Plans:
 5. Operator can validate end-to-end v1.0 pilot: CalDAV read → classify → wash → Google write → notify
 6. CI workflow extended with `docker-build` job; image builds on all CI runs and pushes to public GHCR on `main`
 
-**Plans:** 5 plans in 4 waves
+**Plans:** 1/5 plans executed
 
 Plans:
 
 **Wave 0**
 
-- [ ] 05-01-PLAN.md — Secrets accessor TDD, gitignore, Alpine better-sqlite3 spike (SEC-05, SEC-02)
+- [x] 05-01-PLAN.md — Secrets accessor TDD, gitignore, Alpine better-sqlite3 spike (SEC-05, SEC-02)
 
 **Wave 1** *(parallel after Wave 0 — no file overlap between 05-02 and 05-03)*
 
@@ -268,7 +268,7 @@ Plans:
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
 | 3. CalDAV read, UID store, and Google sync loop | 6/6 | Complete   | 2026-09-15 |
 | 4. Withhold notifications and audit log | 6/6 | Complete   | 2026-09-16 |
-| 5. Docker packaging and local pilot deployment (v1.0) | 0/5 | Not started | — |
+| 5. Docker packaging and local pilot deployment (v1.0) | 1/5 | In Progress|  |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |
 
 ---
