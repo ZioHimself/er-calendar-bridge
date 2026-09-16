@@ -59,7 +59,7 @@ completed: 2026-09-16
 1. **Task 1: compose.yaml pilot operator service** - `7ac9d1e` (feat)
 2. **Task 2: .env.example and secrets onboarding docs** - `67ac66f` (feat)
 
-**Plan metadata:** pending (docs: complete plan)
+**Plan metadata:** `3d39902` (docs: complete plan)
 
 ## Files Created/Modified
 
