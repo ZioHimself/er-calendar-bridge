@@ -28,7 +28,7 @@ Requirements for the v1.0 pilot milestone. Completes at Phase 5 (Docker deployme
 - [x] **SYNC-15**: De-duplicate withhold notifications (stable key + suppression window)
 - [x] **SYNC-16**: IT/operator access to audit record of withholding events
 - [x] **SYNC-17**: Docker image with Compose orchestration — one container per synced member
-- [ ] **SYNC-18**: Offboarding support — revoke credential, remove container, delete propagated copies
+- [x] **SYNC-18**: Offboarding support — revoke credential, remove container, delete propagated copies
 
 ### Security
 
@@ -106,7 +106,7 @@ Deferred post-v1.1.
 | SYNC-15 | Phase 4 | Complete |
 | SYNC-16 | Phase 4 | Complete |
 | SYNC-17 | Phase 5 | Complete |
-| SYNC-18 | Phase 5 | Pending |
+| SYNC-18 | Phase 5 | Complete |
 | SYNC-22 | Phase 6 | Pending |
 | SEC-01 | Phase 3 | Complete |
 | SEC-02 | Phase 5 | Complete |

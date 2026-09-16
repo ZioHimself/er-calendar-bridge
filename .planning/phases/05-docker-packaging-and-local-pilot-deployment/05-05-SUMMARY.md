@@ -68,7 +68,7 @@ completed: 2026-09-16
 2. **Task 2: Offboarding runbook (SYNC-18)** - `b491436` (docs)
 3. **Task 3: README, validation gate, ROADMAP alignment** - `2a2ba76` (docs)
 
-**Plan metadata:** pending (docs: complete plan)
+**Plan metadata:** `86a24e4` (docs: complete plan)
 
 ## Files Created/Modified
 
