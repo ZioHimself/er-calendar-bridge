@@ -14,6 +14,13 @@ const ENV_KEYS = [
   'DATA_DIR',
   'SYNC_INTERVAL_SECONDS',
   'LOG_LEVEL',
+  'SMTP_HOST',
+  'SMTP_PORT',
+  'SMTP_USER',
+  'SMTP_PASSWORD',
+  'SMTP_FROM',
+  'NOTIFY_OWNER_EMAIL',
+  'TAG_GUIDANCE_URL',
 ] as const;
 
 type EnvKey = (typeof ENV_KEYS)[number];
@@ -22,6 +29,7 @@ const SECRET_ENV_KEYS = new Set<EnvKey>([
   'MAILBOX_APP_PASSWORD',
   'GOOGLE_CLIENT_SECRET',
   'GOOGLE_REFRESH_TOKEN',
+  'SMTP_PASSWORD',
 ]);
 
 const envSchema = z.strictObject({
@@ -37,6 +45,40 @@ const envSchema = z.strictObject({
   DATA_DIR: z.string().min(1).optional(),
   SYNC_INTERVAL_SECONDS: z.coerce.number().int().positive().optional(),
   LOG_LEVEL: z.string().min(1).optional(),
+  SMTP_HOST: z.string().min(1).optional(),
+  SMTP_PORT: z.coerce.number().int().positive().optional(),
+  SMTP_USER: z.string().min(1).optional(),
+  SMTP_PASSWORD: z.string().min(1).optional(),
+  SMTP_FROM: z.string().min(1).optional(),
+  NOTIFY_OWNER_EMAIL: z.string().email().optional(),
+  TAG_GUIDANCE_URL: z
+    .union([z.literal(''), z.string().url()])
+    .optional(),
+}).superRefine((data, ctx) => {
+  if (!data.NOTIFY_OWNER_EMAIL) {
+    return;
+  }
+  if (!data.SMTP_HOST) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['SMTP_HOST'],
+      message: 'Required when NOTIFY_OWNER_EMAIL is set',
+    });
+  }
+  if (data.SMTP_PORT === undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['SMTP_PORT'],
+      message: 'Required when NOTIFY_OWNER_EMAIL is set',
+    });
+  }
+  if (!data.SMTP_FROM) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['SMTP_FROM'],
+      message: 'Required when NOTIFY_OWNER_EMAIL is set',
+    });
+  }
 });
 
 export type AppConfig = Readonly<{
@@ -51,6 +93,13 @@ export type AppConfig = Readonly<{
   sqlitePath: string;
   syncIntervalSeconds: number;
   logLevel: string;
+  notifyOwnerEmail?: string;
+  tagGuidanceUrl?: string;
+  smtpHost?: string;
+  smtpPort?: number;
+  smtpUser?: string;
+  smtpPassword?: string;
+  smtpFrom?: string;
 }>;
 
 function pickPilotEnv(env: NodeJS.ProcessEnv): Record<string, string | undefined> {
@@ -125,5 +174,16 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     sqlitePath,
     syncIntervalSeconds: data.SYNC_INTERVAL_SECONDS ?? 300,
     logLevel: data.LOG_LEVEL ?? 'info',
+    ...(data.NOTIFY_OWNER_EMAIL
+      ? { notifyOwnerEmail: data.NOTIFY_OWNER_EMAIL }
+      : {}),
+    ...(data.TAG_GUIDANCE_URL && data.TAG_GUIDANCE_URL !== ''
+      ? { tagGuidanceUrl: data.TAG_GUIDANCE_URL }
+      : {}),
+    ...(data.SMTP_HOST ? { smtpHost: data.SMTP_HOST } : {}),
+    ...(data.SMTP_PORT !== undefined ? { smtpPort: data.SMTP_PORT } : {}),
+    ...(data.SMTP_USER ? { smtpUser: data.SMTP_USER } : {}),
+    ...(data.SMTP_PASSWORD ? { smtpPassword: data.SMTP_PASSWORD } : {}),
+    ...(data.SMTP_FROM ? { smtpFrom: data.SMTP_FROM } : {}),
   };
 }
