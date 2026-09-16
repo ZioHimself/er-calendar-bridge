@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 05 context gathered
-last_updated: "2026-09-16T18:24:46.130Z"
-last_activity: 2026-09-16 -- Phase 5 planning complete
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-09-16T18:30:00.000Z"
+last_activity: 2026-09-16 -- Phase 5 plan 02 Dockerfile complete
 progress:
   total_phases: 2
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
-  percent: 0
+  completed_plans: 3
+  percent: 60
 ---
 
 # Project State
@@ -26,12 +26,12 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 
 ## Current Position
 
-Phase: 04 — COMPLETE
-Plan: 03
-Status: Ready to execute
-Last activity: 2026-09-16 -- Phase 5 planning complete
+Phase: 05 — docker-packaging-and-local-pilot-deployment
+Plan: 02 complete (03 next)
+Status: Executing
+Last activity: 2026-09-16 -- Phase 5 plan 02 Dockerfile complete
 
-Progress: [████░░░░░░] 40%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
@@ -67,6 +67,8 @@ Progress: [████░░░░░░] 40%
 
 | Phase 04-microsoft-graph-writer-and-withhold-notifications P03 | 5 min | 2 tasks | 4 files |
 
+| Phase 05-docker-packaging-and-local-pilot-deployment P02 | 5 min | 2 tasks | 4 files |
+
 ## Accumulated Context
 
 ### Decisions
@@ -95,6 +97,9 @@ Progress: [████░░░░░░] 40%
 - [Phase 04]: Dedup key format bridgeUuid:propagation:episode per D-13
 - [Phase 04]: D-05 SMTP_HOST, SMTP_PORT, SMTP_FROM required only when NOTIFY_OWNER_EMAIL is set
 - [Phase 04]: WithholdNotifier params limited to tier, propagation, dedupKey (D-09)
+- [Phase 05]: Skip npm prune in Docker build; copy node_modules from build stage per 05-SPIKE-ALPINE
+- [Phase 05]: CLI prints usage before loadConfig when no subcommand (TEST-05)
+- [Phase 05]: resolvePilotEnv mutates baseEnv in place for Docker process.env SEC-04 behavior
 
 ### Roadmap Evolution
 
@@ -126,5 +131,5 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-16T18:24:46.120Z
-Stopped at: Phase 05 context gathered
+Last session: 2026-09-16T18:30:00.000Z
+Stopped at: Completed 05-02-PLAN.md
