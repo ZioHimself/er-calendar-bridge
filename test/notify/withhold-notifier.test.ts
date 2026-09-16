@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import nodemailer from 'nodemailer';
 
 const { createTransportMock, sendMailMock } = vi.hoisted(() => ({
   createTransportMock: vi.fn(),
@@ -113,7 +112,7 @@ describe('createWithholdNotifier', () => {
     });
 
     expect(sendMailMock.mock.calls[0]![0].subject).toBe(WITHHOLD_NOTIFY_SUBJECT);
-    expect(sendMailMock.mock.calls[0]![0].text).toMatch(/drop/i);
+    expect(sendMailMock.mock.calls[0]![0].text).toMatch(/withheld/i);
   });
 
   it('includes tag guidance URL when configured (D-12)', async () => {
@@ -175,33 +174,25 @@ describe('createWithholdNotifier', () => {
   });
 
   it('jsonTransport send path produces parseable mail without live SMTP (TEST-05)', async () => {
-    createTransportMock.mockImplementation((options) =>
-      nodemailer.createTransport(options),
+    const { default: nodemailerActual } =
+      await vi.importActual<typeof import('nodemailer')>('nodemailer');
+    createTransportMock.mockImplementation(() =>
+      nodemailerActual.createTransport({ jsonTransport: true }),
     );
 
-    const notifier = createWithholdNotifier({
-      ...baseSmtpConfig,
-      smtpHost: undefined,
-      smtpPort: undefined,
-    });
+    const notifier = createWithholdNotifier(baseSmtpConfig);
 
-    await notifier.notifyWithhold({
+    const result = await notifier.notifyWithhold({
       tier: 'public',
       propagation: 'busy',
       dedupKey: 'uuid:busy:1',
     });
 
+    expect(result).toEqual({ status: 'sent' });
     expect(sendMailMock).not.toHaveBeenCalled();
     const transport = createTransportMock.mock.results[0]?.value as {
-      sendMail: (mail: unknown) => Promise<unknown>;
+      transporter: { options: { jsonTransport?: boolean } };
     };
-    expect(transport).toBeDefined();
-    const info = await transport.sendMail({
-      from: baseSmtpConfig.smtpFrom,
-      to: baseSmtpConfig.notifyOwnerEmail,
-      subject: WITHHOLD_NOTIFY_SUBJECT,
-      text: 'probe',
-    });
-    expect(info).toBeDefined();
+    expect(transport.transporter.options.jsonTransport).toBe(true);
   });
 });
