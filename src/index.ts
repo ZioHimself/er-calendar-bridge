@@ -171,6 +171,13 @@ export async function main(
   argv: string[] = process.argv.slice(2),
   env: NodeJS.ProcessEnv = process.env,
 ): Promise<number> {
+  const subcommand = argv[0];
+
+  if (subcommand === undefined) {
+    printUsage();
+    return 0;
+  }
+
   let config;
   try {
     config = loadConfig(resolvePilotEnv(env));
@@ -181,12 +188,6 @@ export async function main(
   }
 
   const log = createLogger(config.logLevel);
-  const subcommand = argv[0];
-
-  if (subcommand === undefined) {
-    printUsage();
-    return 0;
-  }
 
   if (subcommand === 'audit') {
     if (argv[1] !== 'list') {

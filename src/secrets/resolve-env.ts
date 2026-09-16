@@ -17,17 +17,15 @@ export function resolvePilotEnv(
   baseEnv: NodeJS.ProcessEnv = process.env,
   provider: SecretProvider = createComposeFileSecretProvider(),
 ): NodeJS.ProcessEnv {
-  const merged: NodeJS.ProcessEnv = { ...baseEnv };
-
   for (const [composeName, envKey] of Object.entries(COMPOSE_SECRET_TO_ENV)) {
-    if (!isUnset(merged[envKey])) {
+    if (!isUnset(baseEnv[envKey])) {
       continue;
     }
     const fromFile = provider.get(composeName);
     if (fromFile !== undefined) {
-      merged[envKey] = fromFile;
+      baseEnv[envKey] = fromFile;
     }
   }
 
-  return merged;
+  return baseEnv;
 }
