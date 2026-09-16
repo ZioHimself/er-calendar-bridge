@@ -12,7 +12,7 @@ import { runSyncCycle } from './sync/run-sync-cycle.js';
 import { createGoogleAuthClient } from './writers/google/auth.js';
 import { createGoogleCalendarWriter } from './writers/google/calendar-writer.js';
 
-export const VERSION = '0.0.0';
+export const VERSION = '1.0.0';
 
 const AUDIT_LIST_DEFAULT_SINCE = '1970-01-01T00:00:00.000Z';
 
