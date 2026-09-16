@@ -81,6 +81,22 @@ tsx src/index.ts sync --watch
 
 Each cycle logs aggregate counts (`created`, `updated`, `cancelled`, `dropped`, `errors`) and persists `last_success_at` in SQLite for operator visibility (OPS-03). CalDAV horizon limits are described under [CalDAV horizon (SYNC-13)](#caldav-horizon-sync-13) below.
 
+### Withhold audit (OPS-03)
+
+When events are withheld or downgraded, the bridge appends rows to the `withhold_audit` table in SQLite (PII-free: uid, tier, propagation, notify status, dedup key — no event titles).
+
+Inspect the audit log after sync:
+
+```bash
+tsx src/index.ts audit list
+# only rows recorded at or after a timestamp:
+tsx src/index.ts audit list --since 2026-09-16T00:00:00.000Z
+```
+
+Optional email alerts to the calendar owner use `NOTIFY_OWNER_EMAIL` plus SMTP settings (`SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM`, and optionally `SMTP_USER` / `SMTP_PASSWORD`). When `NOTIFY_OWNER_EMAIL` is unset, withhold transitions are still audited with `notify_status=disabled` and no SMTP is attempted.
+
+`TAG_GUIDANCE_URL` (optional) is included in withhold notification emails so owners can read tagging guidance (D-12); leave empty to omit the link line.
+
 ## Status
 
 Pre-implementation. **v1.0 pilot** validates CalDAV read → classify → wash → Google write, deletions, recurrence, and withhold notifications. **v1.1** adds Microsoft Graph.

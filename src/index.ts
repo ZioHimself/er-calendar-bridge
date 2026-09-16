@@ -1,9 +1,10 @@
 import { fileURLToPath } from 'node:url';
 import pino from 'pino';
+import { z } from 'zod';
 import { createCalDavClient, createCalDavReader } from './adapters/caldav/index.js';
-import { loadConfig } from './config/env.js';
+import { loadConfig, type AppConfig } from './config/env.js';
 import { createWithholdNotifier } from './notify/withhold-notifier.js';
-import { openAuditStore } from './store/audit-store.js';
+import { openAuditStore, type WithholdAuditRow } from './store/audit-store.js';
 import { openMappingStore } from './store/mapping-store.js';
 import { openSyncStateStore } from './store/sync-state-store.js';
 import { runSyncCycle } from './sync/run-sync-cycle.js';
@@ -11,6 +12,75 @@ import { createGoogleAuthClient } from './writers/google/auth.js';
 import { createGoogleCalendarWriter } from './writers/google/calendar-writer.js';
 
 export const VERSION = '0.0.0';
+
+const AUDIT_LIST_DEFAULT_SINCE = '1970-01-01T00:00:00.000Z';
+
+const iso8601SinceSchema = z.string().refine(
+  (value) => !Number.isNaN(Date.parse(value)),
+  { message: 'expected ISO-8601 timestamp' },
+);
+
+export function printUsage(): void {
+  console.log(`er-calendar-bridge v${VERSION}`);
+  console.log('Usage:');
+  console.log('  er-calendar-bridge sync [--watch]');
+  console.log('  er-calendar-bridge audit list [--since ISO-8601]');
+}
+
+function parseAuditListSince(listArgv: string[]): { since: string } | { error: string } {
+  const sinceFlagIndex = listArgv.indexOf('--since');
+  if (sinceFlagIndex === -1) {
+    return { since: AUDIT_LIST_DEFAULT_SINCE };
+  }
+
+  const raw = listArgv[sinceFlagIndex + 1];
+  if (raw === undefined || raw.startsWith('--')) {
+    return { error: 'Missing value for --since (expected ISO-8601 timestamp)' };
+  }
+
+  const parsed = iso8601SinceSchema.safeParse(raw);
+  if (!parsed.success) {
+    return {
+      error: `Invalid --since value: ${parsed.error.issues[0]?.message ?? 'expected ISO-8601 timestamp'}`,
+    };
+  }
+
+  return { since: new Date(raw).toISOString() };
+}
+
+function formatAuditListRow(row: WithholdAuditRow): string {
+  return [
+    row.sourceUid,
+    row.recurrenceId ?? '',
+    row.tier,
+    row.propagation,
+    row.notifyStatus,
+    row.dedupKey,
+    row.recordedAt,
+  ].join('\t');
+}
+
+export function runAuditList(config: AppConfig, listArgv: string[]): number {
+  const sinceResult = parseAuditListSince(listArgv);
+  if ('error' in sinceResult) {
+    console.error(sinceResult.error);
+    return 1;
+  }
+
+  const auditStore = openAuditStore(config.sqlitePath);
+  try {
+    const rows = auditStore.listAuditSince(sinceResult.since);
+    console.log(
+      'uid\trecurrence_id\ttier\tpropagation\tnotify_status\tdedup_key\trecorded_at',
+    );
+    for (const row of rows) {
+      console.log(formatAuditListRow(row));
+    }
+    return 0;
+  } finally {
+    auditStore.close();
+  }
+}
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => {
@@ -96,10 +166,13 @@ async function runOneSyncCycle(log: pino.Logger): Promise<void> {
   }
 }
 
-export async function main(argv: string[] = process.argv.slice(2)): Promise<number> {
+export async function main(
+  argv: string[] = process.argv.slice(2),
+  env: NodeJS.ProcessEnv = process.env,
+): Promise<number> {
   let config;
   try {
-    config = loadConfig();
+    config = loadConfig(env);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(message);
@@ -108,13 +181,26 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<numb
 
   const log = createLogger(config.logLevel);
   const subcommand = argv[0];
-  const watch = argv.includes('--watch');
+
+  if (subcommand === undefined) {
+    printUsage();
+    return 0;
+  }
+
+  if (subcommand === 'audit') {
+    if (argv[1] !== 'list') {
+      printUsage();
+      return 1;
+    }
+    return runAuditList(config, argv.slice(2));
+  }
 
   if (subcommand !== 'sync') {
-    console.log(`er-calendar-bridge v${VERSION}`);
-    console.log('Usage: er-calendar-bridge sync [--watch]');
-    return subcommand === undefined ? 0 : 1;
+    printUsage();
+    return 1;
   }
+
+  const watch = argv.includes('--watch');
 
   if (!watch) {
     try {
