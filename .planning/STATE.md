@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-09-16T18:30:00.000Z"
-last_activity: 2026-09-16 -- Phase 5 plan 02 Dockerfile complete
+stopped_at: Completed 05-04-PLAN.md
+last_updated: "2026-09-16T18:36:13.887Z"
+last_activity: 2026-09-16 -- Phase 5 plan 04 CI docker-build GHCR
 progress:
   total_phases: 2
   completed_phases: 0
   total_plans: 5
-  completed_plans: 3
-  percent: 60
+  completed_plans: 4
+  percent: 80
 ---
 
 # Project State
@@ -27,11 +27,11 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 ## Current Position
 
 Phase: 05 — docker-packaging-and-local-pilot-deployment
-Plan: 02 complete (03 next)
+Plan: 04 complete (05 next)
 Status: Executing
-Last activity: 2026-09-16 -- Phase 5 plan 02 Dockerfile complete
+Last activity: 2026-09-16 -- Phase 5 plan 04 CI docker-build GHCR
 
-Progress: [██████░░░░] 60%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
@@ -69,6 +69,8 @@ Progress: [██████░░░░] 60%
 
 | Phase 05-docker-packaging-and-local-pilot-deployment P02 | 5 min | 2 tasks | 4 files |
 
+| Phase 05-docker-packaging-and-local-pilot-deployment P04 | 5 min | 2 tasks | 4 files |
+
 ## Accumulated Context
 
 ### Decisions
@@ -100,6 +102,8 @@ Progress: [██████░░░░] 60%
 - [Phase 05]: Skip npm prune in Docker build; copy node_modules from build stage per 05-SPIKE-ALPINE
 - [Phase 05]: CLI prints usage before loadConfig when no subcommand (TEST-05)
 - [Phase 05]: resolvePilotEnv mutates baseEnv in place for Docker process.env SEC-04 behavior
+- [Phase 05]: package.json 1.0.0 is semver source for GHCR metadata-action tags
+- [Phase 05]: docker compose config validates compose after CI image build without provider secrets
 
 ### Roadmap Evolution
 
@@ -131,5 +135,5 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-16T18:30:00.000Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-09-16T18:36:13.880Z
+Stopped at: Completed 05-04-PLAN.md

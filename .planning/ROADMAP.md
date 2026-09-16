@@ -217,7 +217,7 @@ Plans:
 5. Operator can validate end-to-end v1.0 pilot: CalDAV read → classify → wash → Google write → notify
 6. CI workflow extended with `docker-build` job; image builds on all CI runs and pushes to public GHCR on `main`
 
-**Plans:** 3/5 plans executed
+**Plans:** 4/5 plans executed
 
 Plans:
 
@@ -232,7 +232,7 @@ Plans:
 
 **Wave 2** *(blocked on 05-02 and 05-03)*
 
-- [ ] 05-04-PLAN.md — CI docker-build GHCR publish + version 1.0.0 (TEST-05, OPS-04)
+- [x] 05-04-PLAN.md — CI docker-build GHCR publish + version 1.0.0 (TEST-05, OPS-04)
 
 **Wave 3** *(blocked on 05-04)*
 
@@ -268,7 +268,7 @@ Plans:
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
 | 3. CalDAV read, UID store, and Google sync loop | 6/6 | Complete   | 2026-09-15 |
 | 4. Withhold notifications and audit log | 6/6 | Complete   | 2026-09-16 |
-| 5. Docker packaging and local pilot deployment (v1.0) | 3/5 | In Progress|  |
+| 5. Docker packaging and local pilot deployment (v1.0) | 4/5 | In Progress|  |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |
 
 ---
