@@ -21,7 +21,7 @@ Canonical refs: `it-strategy/er-calendar-bridge/calendar-sync-02-requirements.md
 - [x] **Phase 01.1: CI pipeline (INSERTED)** — GitHub Actions for test, lint, and typecheck (completed 2026-09-13)
 - [x] **Phase 2: Classification, washing, and iCal domain logic** — Fail-closed tier rules and busy-block construction (completed 2026-09-14)
 - [x] **Phase 3: CalDAV read, UID store, and Google sync loop** — mailbox.org read, SQLite mapping, Google pilot sync (completed 2026-09-15)
-- [ ] **Phase 4: Withhold notifications and audit log** — SMTP owner alerts, de-duplication, IT audit record
+- [x] **Phase 4: Withhold notifications and audit log** — SMTP owner alerts, de-duplication, IT audit record (completed 2026-09-16)
 - [ ] **Phase 5: Docker packaging and local pilot deployment (v1.0)** — Image, Compose, secrets, Google-only operator laptop pilot
 - [ ] **Phase 6: Microsoft Graph writer (v1.1)** — Outlook write path mirroring Google; dual UID mapping
 
@@ -175,7 +175,7 @@ Plans:
 3. IT/operator can inspect an audit log of withholding events
 4. Notification path works against the Google pilot sync loop (no Microsoft writer required)
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 
@@ -198,7 +198,7 @@ Plans:
 
 **Wave 4** *(blocked on 04-05)*
 
-- [ ] 04-06-PLAN.md — `audit list` CLI + README (SYNC-16, OPS-03, D-15)
+- [x] 04-06-PLAN.md — `audit list` CLI + README (SYNC-16, OPS-03, D-15)
 
 ### Phase 5: Docker packaging and local pilot deployment (v1.0)
 
@@ -252,7 +252,7 @@ Plans:
 | 01.1. CI pipeline (INSERTED) | 3/3 | Complete   | 2026-09-13 |
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
 | 3. CalDAV read, UID store, and Google sync loop | 6/6 | Complete   | 2026-09-15 |
-| 4. Withhold notifications and audit log | 5/6 | In Progress|  |
+| 4. Withhold notifications and audit log | 6/6 | Complete   | 2026-09-16 |
 | 5. Docker packaging and local pilot deployment (v1.0) | 0/TBD | Not started | — |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |
 
