@@ -1,5 +1,10 @@
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import type { WithholdNotifier } from '../../src/notify/types.js';
 import { runSyncCycle } from '../../src/sync/run-sync-cycle.js';
+import { openAuditStore } from '../../src/store/audit-store.js';
 import { loadFixture } from '../helpers/load-fixture.js';
 import { openMappingStore } from '../../src/store/mapping-store.js';
 import { openSyncStateStore } from '../../src/store/sync-state-store.js';
@@ -18,38 +23,95 @@ const silentLogger: Logger = {
   error: () => {},
 };
 
+function sharedSqlitePath(): { sqlitePath: string; cleanup: () => void } {
+  const dir = mkdtempSync(join(tmpdir(), 'er-bridge-sync-'));
+  const sqlitePath = join(dir, 'bridge.db');
+  return {
+    sqlitePath,
+    cleanup: () => {
+      rmSync(dir, { recursive: true, force: true });
+    },
+  };
+}
+
 function buildDeps(overrides: {
   caldav: CalDavReader;
   writer: CalendarWriter;
   now?: () => Date;
-}): { deps: SyncCycleDeps; mappingStore: ReturnType<typeof openMappingStore>; syncStateStore: ReturnType<typeof openSyncStateStore> } {
-  const mappingStore = openMappingStore(':memory:');
-  const syncStateStore = openSyncStateStore(':memory:');
+  notifyEnabled?: boolean;
+  withholdNotifier?: WithholdNotifier;
+}): {
+  deps: SyncCycleDeps;
+  mappingStore: ReturnType<typeof openMappingStore>;
+  syncStateStore: ReturnType<typeof openSyncStateStore>;
+  auditStore: ReturnType<typeof openAuditStore>;
+  cleanup: () => void;
+} {
+  const { sqlitePath, cleanup } = sharedSqlitePath();
+  const mappingStore = openMappingStore(sqlitePath);
+  const syncStateStore = openSyncStateStore(sqlitePath);
+  const auditStore = openAuditStore(sqlitePath);
+  const withholdNotifier =
+    overrides.withholdNotifier ??
+    vi.fn<WithholdNotifier['notifyWithhold']>().mockResolvedValue({
+      status: 'sent',
+    });
+
   const deps: SyncCycleDeps = {
     caldav: overrides.caldav,
     writer: overrides.writer,
     mappingStore,
     syncStateStore,
+    auditStore,
+    withholdNotifier,
+    notifyEnabled: overrides.notifyEnabled ?? true,
     calendarUrl: CALENDAR_URL,
     log: silentLogger,
     now: overrides.now,
   };
-  return { deps, mappingStore, syncStateStore };
+  return { deps, mappingStore, syncStateStore, auditStore, cleanup };
 }
 
 describe('sync cycle acceptance', () => {
   let mappingStore: ReturnType<typeof openMappingStore>;
   let syncStateStore: ReturnType<typeof openSyncStateStore>;
+  let auditStore: ReturnType<typeof openAuditStore>;
+  let cleanupStores: () => void;
 
   beforeEach(() => {
-    mappingStore = openMappingStore(':memory:');
-    syncStateStore = openSyncStateStore(':memory:');
+    const { sqlitePath, cleanup } = sharedSqlitePath();
+    cleanupStores = cleanup;
+    mappingStore = openMappingStore(sqlitePath);
+    syncStateStore = openSyncStateStore(sqlitePath);
+    auditStore = openAuditStore(sqlitePath);
   });
 
   afterEach(() => {
     mappingStore.close();
     syncStateStore.close();
+    auditStore.close();
+    cleanupStores();
   });
+
+  function baseWithholdDeps(
+    caldav: CalDavReader,
+    writer: CalendarWriter,
+    withholdNotifier: WithholdNotifier = vi
+      .fn<WithholdNotifier['notifyWithhold']>()
+      .mockResolvedValue({ status: 'sent' }),
+  ): SyncCycleDeps {
+    return {
+      caldav,
+      writer,
+      mappingStore,
+      syncStateStore,
+      auditStore,
+      withholdNotifier,
+      notifyEnabled: true,
+      calendarUrl: CALENDAR_URL,
+      log: silentLogger,
+    };
+  }
 
   it('idempotent: empty second delta does not duplicate upserts (SYNC-11)', async () => {
     const { ics } = await loadFixture('internal', 'team-sync');
@@ -67,14 +129,7 @@ describe('sync cycle acceptance', () => {
       cancel: vi.fn().mockResolvedValue(undefined),
     };
 
-    const deps: SyncCycleDeps = {
-      caldav,
-      writer,
-      mappingStore,
-      syncStateStore,
-      calendarUrl: CALENDAR_URL,
-      log: silentLogger,
-    };
+    const deps = baseWithholdDeps(caldav, writer);
 
     await runSyncCycle(deps);
     await runSyncCycle(deps);
@@ -106,14 +161,7 @@ describe('sync cycle acceptance', () => {
       cancel: vi.fn().mockResolvedValue(undefined),
     };
 
-    const deps: SyncCycleDeps = {
-      caldav,
-      writer,
-      mappingStore,
-      syncStateStore,
-      calendarUrl: CALENDAR_URL,
-      log: silentLogger,
-    };
+    const deps = baseWithholdDeps(caldav, writer);
 
     await runSyncCycle(deps);
     await runSyncCycle(deps);
@@ -147,14 +195,7 @@ describe('sync cycle acceptance', () => {
       cancel: vi.fn().mockResolvedValue(undefined),
     };
 
-    const deps: SyncCycleDeps = {
-      caldav,
-      writer,
-      mappingStore,
-      syncStateStore,
-      calendarUrl: CALENDAR_URL,
-      log: silentLogger,
-    };
+    const deps = baseWithholdDeps(caldav, writer);
 
     await runSyncCycle(deps);
     await runSyncCycle(deps);
@@ -185,14 +226,7 @@ describe('sync cycle acceptance', () => {
       cancel: vi.fn().mockResolvedValue(undefined),
     };
 
-    const deps: SyncCycleDeps = {
-      caldav,
-      writer,
-      mappingStore,
-      syncStateStore,
-      calendarUrl: CALENDAR_URL,
-      log: silentLogger,
-    };
+    const deps = baseWithholdDeps(caldav, writer);
 
     const result = await runSyncCycle(deps);
 
@@ -227,14 +261,7 @@ describe('sync cycle acceptance', () => {
       cancel: vi.fn().mockResolvedValue(undefined),
     };
 
-    const deps: SyncCycleDeps = {
-      caldav,
-      writer,
-      mappingStore,
-      syncStateStore,
-      calendarUrl: CALENDAR_URL,
-      log: silentLogger,
-    };
+    const deps = baseWithholdDeps(caldav, writer);
 
     const result = await runSyncCycle(deps);
 
@@ -261,7 +288,7 @@ describe('sync cycle acceptance', () => {
       cancel: vi.fn(),
     };
 
-    const { deps, syncStateStore: stateStore } = buildDeps({
+    const { deps, syncStateStore: stateStore, cleanup } = buildDeps({
       caldav,
       writer,
       now: () => fixedNow,
@@ -277,5 +304,335 @@ describe('sync cycle acceptance', () => {
     );
 
     stateStore.close();
+    cleanup();
+  });
+});
+
+describe('sync cycle withhold', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('withhold: internal first cycle notifies once; second unchanged busy does not (D-02, D-14)', async () => {
+    const { ics } = await loadFixture('internal', 'team-sync');
+    const withholdNotifier = vi
+      .fn<WithholdNotifier['notifyWithhold']>()
+      .mockResolvedValue({ status: 'sent' });
+
+    const caldav: CalDavReader = {
+      poll: vi
+        .fn()
+        .mockResolvedValueOnce({
+          changed: [{ href: '/team-sync.ics', data: ics }],
+          deleted: [],
+        })
+        .mockResolvedValueOnce({
+          changed: [{ href: '/team-sync.ics', data: ics }],
+          deleted: [],
+        }),
+    };
+    const writer: CalendarWriter = {
+      upsertOutbound: vi.fn().mockResolvedValue({ googleEventId: 'g-internal' }),
+      cancel: vi.fn(),
+    };
+
+    const { deps, cleanup } = buildDeps({ caldav, writer, withholdNotifier });
+
+    await runSyncCycle(deps);
+    await runSyncCycle(deps);
+
+    expect(withholdNotifier).toHaveBeenCalledTimes(1);
+    expect(withholdNotifier.mock.calls[0]?.[0].propagation).toBe('busy');
+
+    deps.auditStore.close();
+    deps.mappingStore.close();
+    deps.syncStateStore.close();
+    cleanup();
+  });
+
+  it('withhold: tier-only busy change does not re-notify (D-02)', async () => {
+    const { ics } = await loadFixture('internal', 'team-sync');
+    const icsRenamed = ics.replace(
+      'SUMMARY:Weekly team sync',
+      'SUMMARY:Weekly team sync (renamed)',
+    );
+    const withholdNotifier = vi
+      .fn<WithholdNotifier['notifyWithhold']>()
+      .mockResolvedValue({ status: 'sent' });
+
+    const caldav: CalDavReader = {
+      poll: vi
+        .fn()
+        .mockResolvedValueOnce({
+          changed: [{ href: '/team-sync.ics', data: ics, etag: 'e1' }],
+          deleted: [],
+        })
+        .mockResolvedValueOnce({
+          changed: [{ href: '/team-sync.ics', data: icsRenamed, etag: 'e2' }],
+          deleted: [],
+        }),
+    };
+    const writer: CalendarWriter = {
+      upsertOutbound: vi.fn().mockResolvedValue({ googleEventId: 'g-internal' }),
+      cancel: vi.fn(),
+    };
+
+    const { deps, cleanup } = buildDeps({ caldav, writer, withholdNotifier });
+
+    await runSyncCycle(deps);
+    await runSyncCycle(deps);
+
+    expect(withholdNotifier).toHaveBeenCalledTimes(1);
+
+    deps.auditStore.close();
+    deps.mappingStore.close();
+    deps.syncStateStore.close();
+    cleanup();
+  });
+
+  it('withhold: sensitive drop first sight notifies and audits drop dedup key (D-01)', async () => {
+    const { ics, expected } = await loadFixture('sensitive', 'hr-review');
+    const withholdNotifier = vi
+      .fn<WithholdNotifier['notifyWithhold']>()
+      .mockResolvedValue({ status: 'sent' });
+
+    const caldav: CalDavReader = {
+      poll: vi.fn().mockResolvedValueOnce({
+        changed: [{ href: '/hr.ics', data: ics }],
+        deleted: [],
+      }),
+    };
+    const writer: CalendarWriter = {
+      upsertOutbound: vi.fn(),
+      cancel: vi.fn(),
+    };
+
+    const { deps, auditStore, cleanup } = buildDeps({
+      caldav,
+      writer,
+      withholdNotifier,
+    });
+
+    await runSyncCycle(deps);
+
+    expect(withholdNotifier).toHaveBeenCalledTimes(1);
+    expect(withholdNotifier.mock.calls[0]?.[0].propagation).toBe('drop');
+
+    const rows = auditStore.listAuditSince('1970-01-01T00:00:00.000Z');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.dedupKey).toContain(':drop:');
+    expect(rows[0]?.sourceUid).toBe(expected.uid);
+    expect(auditStore.getNotifyState({ uid: expected.uid })?.bridgeUuid).toBeTruthy();
+
+    auditStore.close();
+    deps.mappingStore.close();
+    deps.syncStateStore.close();
+    cleanup();
+  });
+
+  it('withhold: public then internal notifies once; repeated internal does not (D-01 busy)', async () => {
+    const { ics: publicIcs } = await loadFixture('public', 'board-meeting');
+    const busyIcs = publicIcs.replace(
+      'CATEGORIES:ER-PUBLIC',
+      'CATEGORIES:ER-INTERNAL',
+    );
+    const withholdNotifier = vi
+      .fn<WithholdNotifier['notifyWithhold']>()
+      .mockResolvedValue({ status: 'sent' });
+
+    const caldav: CalDavReader = {
+      poll: vi
+        .fn()
+        .mockResolvedValueOnce({
+          changed: [{ href: '/tier.ics', data: publicIcs }],
+          deleted: [],
+        })
+        .mockResolvedValueOnce({
+          changed: [{ href: '/tier.ics', data: busyIcs }],
+          deleted: [],
+        })
+        .mockResolvedValueOnce({
+          changed: [{ href: '/tier.ics', data: busyIcs }],
+          deleted: [],
+        }),
+    };
+    const writer: CalendarWriter = {
+      upsertOutbound: vi.fn().mockResolvedValue({ googleEventId: 'g-tier' }),
+      cancel: vi.fn(),
+    };
+
+    const { deps, cleanup } = buildDeps({ caldav, writer, withholdNotifier });
+
+    await runSyncCycle(deps);
+    await runSyncCycle(deps);
+    await runSyncCycle(deps);
+
+    expect(withholdNotifier).toHaveBeenCalledTimes(1);
+    expect(withholdNotifier.mock.calls[0]?.[0].propagation).toBe('busy');
+
+    deps.auditStore.close();
+    deps.mappingStore.close();
+    deps.syncStateStore.close();
+    cleanup();
+  });
+
+  it('withhold: public → internal → public → internal notifies twice (D-03)', async () => {
+    const { ics: publicIcs } = await loadFixture('public', 'board-meeting');
+    const busyIcs = publicIcs.replace(
+      'CATEGORIES:ER-PUBLIC',
+      'CATEGORIES:ER-INTERNAL',
+    );
+    const withholdNotifier = vi
+      .fn<WithholdNotifier['notifyWithhold']>()
+      .mockResolvedValue({ status: 'sent' });
+
+    const caldav: CalDavReader = {
+      poll: vi
+        .fn()
+        .mockResolvedValueOnce({
+          changed: [{ href: '/ep.ics', data: publicIcs }],
+          deleted: [],
+        })
+        .mockResolvedValueOnce({
+          changed: [{ href: '/ep.ics', data: busyIcs }],
+          deleted: [],
+        })
+        .mockResolvedValueOnce({
+          changed: [{ href: '/ep.ics', data: publicIcs }],
+          deleted: [],
+        })
+        .mockResolvedValueOnce({
+          changed: [{ href: '/ep.ics', data: busyIcs }],
+          deleted: [],
+        }),
+    };
+    const writer: CalendarWriter = {
+      upsertOutbound: vi.fn().mockResolvedValue({ googleEventId: 'g-ep' }),
+      cancel: vi.fn(),
+    };
+
+    const { deps, cleanup } = buildDeps({ caldav, writer, withholdNotifier });
+
+    await runSyncCycle(deps);
+    await runSyncCycle(deps);
+    await runSyncCycle(deps);
+    await runSyncCycle(deps);
+
+    expect(withholdNotifier).toHaveBeenCalledTimes(2);
+
+    deps.auditStore.close();
+    deps.mappingStore.close();
+    deps.syncStateStore.close();
+    cleanup();
+  });
+
+  it('withhold: deleted tombstone does not call notifier (D-04)', async () => {
+    const uid = 'team-sync-2026@er.example';
+    const withholdNotifier = vi
+      .fn<WithholdNotifier['notifyWithhold']>()
+      .mockResolvedValue({ status: 'sent' });
+
+    const { deps, mappingStore, cleanup } = buildDeps({
+      caldav: {
+        poll: vi.fn().mockResolvedValueOnce({
+          changed: [],
+          deleted: [{ href: '/gone.ics', uid }],
+        }),
+      },
+      writer: {
+        upsertOutbound: vi.fn(),
+        cancel: vi.fn().mockResolvedValue(undefined),
+      },
+      withholdNotifier,
+    });
+
+    mappingStore.upsertMapping({
+      uid,
+      googleEventId: 'g-delete-me',
+      status: 'active',
+    });
+
+    await runSyncCycle(deps);
+
+    expect(withholdNotifier).not.toHaveBeenCalled();
+
+    deps.auditStore.close();
+    mappingStore.close();
+    deps.syncStateStore.close();
+    cleanup();
+  });
+
+  it('withhold: notify disabled records audit disabled without SMTP (D-05, D-16)', async () => {
+    const { ics } = await loadFixture('internal', 'team-sync');
+    const withholdNotifier = vi
+      .fn<WithholdNotifier['notifyWithhold']>()
+      .mockResolvedValue({ status: 'sent' });
+
+    const caldav: CalDavReader = {
+      poll: vi.fn().mockResolvedValueOnce({
+        changed: [{ href: '/team-sync.ics', data: ics }],
+        deleted: [],
+      }),
+    };
+    const writer: CalendarWriter = {
+      upsertOutbound: vi.fn().mockResolvedValue({ googleEventId: 'g-internal' }),
+      cancel: vi.fn(),
+    };
+
+    const { deps, auditStore, cleanup } = buildDeps({
+      caldav,
+      writer,
+      withholdNotifier,
+      notifyEnabled: false,
+    });
+
+    await runSyncCycle(deps);
+
+    expect(withholdNotifier).not.toHaveBeenCalled();
+    const rows = auditStore.listAuditSince('1970-01-01T00:00:00.000Z');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.notifyStatus).toBe('disabled');
+
+    auditStore.close();
+    deps.mappingStore.close();
+    deps.syncStateStore.close();
+    cleanup();
+  });
+
+  it('withhold: notifier rejection does not increment cycle errors (D-08)', async () => {
+    const { ics } = await loadFixture('internal', 'team-sync');
+    const withholdNotifier = vi
+      .fn<WithholdNotifier['notifyWithhold']>()
+      .mockRejectedValue(new Error('smtp down'));
+
+    const caldav: CalDavReader = {
+      poll: vi.fn().mockResolvedValueOnce({
+        changed: [{ href: '/team-sync.ics', data: ics }],
+        deleted: [],
+      }),
+    };
+    const writer: CalendarWriter = {
+      upsertOutbound: vi.fn().mockResolvedValue({ googleEventId: 'g-internal' }),
+      cancel: vi.fn(),
+    };
+
+    const { deps, auditStore, cleanup } = buildDeps({
+      caldav,
+      writer,
+      withholdNotifier,
+    });
+
+    const result = await runSyncCycle(deps);
+
+    expect(result.errors).toBe(0);
+    expect(result.lastSuccessAt).toBeDefined();
+    const rows = auditStore.listAuditSince('1970-01-01T00:00:00.000Z');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.notifyStatus).toBe('failed');
+
+    auditStore.close();
+    deps.mappingStore.close();
+    deps.syncStateStore.close();
+    cleanup();
   });
 });
