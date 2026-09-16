@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { loadConfig } from '../../src/config/env.js';
+import type { WithholdNotifyParams } from '../../src/notify/types.js';
 
 function minimalEnv(
   overrides: Record<string, string | undefined> = {},
@@ -63,6 +64,91 @@ describe('loadConfig', () => {
     ).toThrow(/UNKNOWN_PILOT_KEY/i);
   });
 
+  it('rejects unknown SMTP-related env keys (SEC-04)', () => {
+    expect(() =>
+      loadConfig(minimalEnv({ SMTP_EXTRA: 'nope' })),
+    ).toThrow(/SMTP_EXTRA/i);
+  });
+
+  it('succeeds without SMTP_HOST when NOTIFY_OWNER_EMAIL unset (D-05)', () => {
+    expect(() =>
+      loadConfig(
+        minimalEnv({
+          NOTIFY_OWNER_EMAIL: undefined,
+          SMTP_HOST: undefined,
+        }),
+      ),
+    ).not.toThrow();
+    const config = loadConfig(
+      minimalEnv({
+        NOTIFY_OWNER_EMAIL: undefined,
+        SMTP_HOST: undefined,
+      }),
+    );
+    expect(config.smtpHost).toBeUndefined();
+    expect(config.notifyOwnerEmail).toBeUndefined();
+  });
+
+  it('requires SMTP_HOST when NOTIFY_OWNER_EMAIL is set (D-05)', () => {
+    expect(() =>
+      loadConfig(
+        minimalEnv({
+          NOTIFY_OWNER_EMAIL: 'owner@example.org',
+          SMTP_PORT: '587',
+          SMTP_FROM: 'noreply@example.org',
+          SMTP_HOST: undefined,
+        }),
+      ),
+    ).toThrow(/SMTP_HOST/i);
+  });
+
+  it('rejects invalid NOTIFY_OWNER_EMAIL format', () => {
+    expect(() =>
+      loadConfig(
+        minimalEnv({
+          NOTIFY_OWNER_EMAIL: 'not-an-email',
+        }),
+      ),
+    ).toThrow(/NOTIFY_OWNER_EMAIL/i);
+  });
+
+  it('accepts optional TAG_GUIDANCE_URL as empty string or valid URL (D-12)', () => {
+    const empty = loadConfig(
+      minimalEnv({ TAG_GUIDANCE_URL: '' }),
+    );
+    expect(empty.tagGuidanceUrl).toBeUndefined();
+
+    const withUrl = loadConfig(
+      minimalEnv({
+        TAG_GUIDANCE_URL: 'https://docs.example.org/tag-guidance',
+      }),
+    );
+    expect(withUrl.tagGuidanceUrl).toBe(
+      'https://docs.example.org/tag-guidance',
+    );
+  });
+
+  it('does not echo SMTP_PASSWORD in validation errors', () => {
+    const secret = 'smtp-password-secret-value';
+    try {
+      loadConfig(
+        minimalEnv({
+          NOTIFY_OWNER_EMAIL: 'owner@example.org',
+          SMTP_PASSWORD: secret,
+          SMTP_PORT: '587',
+          SMTP_FROM: 'noreply@example.org',
+          SMTP_HOST: undefined,
+        }),
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      expect(message).not.toContain(secret);
+      expect(message).toMatch(/SMTP_HOST/i);
+      return;
+    }
+    expect.fail('expected loadConfig to throw');
+  });
+
   it('tolerates unrelated keys present in process.env', () => {
     const pilot = minimalEnv();
     const snapshot = { ...process.env };
@@ -91,5 +177,19 @@ describe('loadConfig', () => {
       return;
     }
     expect.fail('expected loadConfig to throw');
+  });
+});
+
+describe('WithholdNotifier port', () => {
+  it('exports params without event summary or location (D-09)', () => {
+    const params: WithholdNotifyParams = {
+      tier: 'internal',
+      propagation: 'busy',
+      dedupKey: 'bridge-uuid:busy:1',
+    };
+    expect(params.dedupKey).toBe('bridge-uuid:busy:1');
+    expect('summary' in params).toBe(false);
+    expect('title' in params).toBe(false);
+    expect('location' in params).toBe(false);
   });
 });
