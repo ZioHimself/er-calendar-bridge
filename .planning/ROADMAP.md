@@ -175,7 +175,7 @@ Plans:
 3. IT/operator can inspect an audit log of withholding events
 4. Notification path works against the Google pilot sync loop (no Microsoft writer required)
 
-**Plans:** 4/6 plans executed
+**Plans:** 5/6 plans executed
 
 Plans:
 
@@ -194,7 +194,7 @@ Plans:
 
 **Wave 3** *(blocked on Waves 0–2)*
 
-- [ ] 04-05-PLAN.md — sync loop wire + integration tests (SYNC-14–16, OPS-03, D-01–D-08)
+- [x] 04-05-PLAN.md — sync loop wire + integration tests (SYNC-14–16, OPS-03, D-01–D-08)
 
 **Wave 4** *(blocked on 04-05)*
 
@@ -252,7 +252,7 @@ Plans:
 | 01.1. CI pipeline (INSERTED) | 3/3 | Complete   | 2026-09-13 |
 | 2. Classification, washing, and iCal domain logic | 3/3 | Complete   | 2026-09-14 |
 | 3. CalDAV read, UID store, and Google sync loop | 6/6 | Complete   | 2026-09-15 |
-| 4. Withhold notifications and audit log | 4/6 | In Progress|  |
+| 4. Withhold notifications and audit log | 5/6 | In Progress|  |
 | 5. Docker packaging and local pilot deployment (v1.0) | 0/TBD | Not started | — |
 | 6. Microsoft Graph writer (v1.1) | 0/TBD | Not started | — |
 
