@@ -3,6 +3,7 @@ import pino from 'pino';
 import { z } from 'zod';
 import { createCalDavClient, createCalDavReader } from './adapters/caldav/index.js';
 import { loadConfig, type AppConfig } from './config/env.js';
+import { resolvePilotEnv } from './secrets/resolve-env.js';
 import { createWithholdNotifier } from './notify/withhold-notifier.js';
 import { openAuditStore, type WithholdAuditRow } from './store/audit-store.js';
 import { openMappingStore } from './store/mapping-store.js';
@@ -172,7 +173,7 @@ export async function main(
 ): Promise<number> {
   let config;
   try {
-    config = loadConfig(env);
+    config = loadConfig(resolvePilotEnv(env));
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(message);
