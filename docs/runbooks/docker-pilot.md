@@ -30,7 +30,7 @@ cp .env.example .env
 
 Edit `.env`:
 
-- Set **`IMAGE=ghcr.io/europeanresolve/er-calendar-bridge:1.0.0`** (stable semver tag from CI; bump when you intentionally upgrade).
+- Set **`IMAGE=ghcr.io/europeanresolve/er-calendar-bridge:0.1.0`** (stable semver tag from CI; bump when you intentionally upgrade).
 - Fill mailbox.org URLs, `MAILBOX_USERNAME`, `GOOGLE_CALENDAR_ID`, optional SMTP / notify settings.
 - Tune **`SYNC_INTERVAL_SECONDS`** (default `300`) for watch polling (D-13).
 
