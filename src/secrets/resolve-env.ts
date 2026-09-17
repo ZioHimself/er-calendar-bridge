@@ -1,5 +1,19 @@
-import { createComposeFileSecretProvider } from './file-provider.js';
+import {
+  createComposeFileSecretProvider,
+  type ComposeFileSecretProvider,
+} from './file-provider.js';
 import type { SecretProvider } from './types.js';
+
+function readSecretForBase(
+  provider: SecretProvider,
+  baseName: string,
+): string | undefined {
+  const compose = provider as ComposeFileSecretProvider;
+  if (typeof compose.getForBaseName === 'function') {
+    return compose.getForBaseName(baseName);
+  }
+  return provider.get(baseName);
+}
 
 export const COMPOSE_SECRET_TO_ENV: Readonly<Record<string, string>> = {
   mailbox_app_password: 'MAILBOX_APP_PASSWORD',
@@ -21,7 +35,7 @@ export function resolvePilotEnv(
     if (!isUnset(baseEnv[envKey])) {
       continue;
     }
-    const fromFile = provider.get(composeName);
+    const fromFile = readSecretForBase(provider, composeName);
     if (fromFile !== undefined) {
       baseEnv[envKey] = fromFile;
     }

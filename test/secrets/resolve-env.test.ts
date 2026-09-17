@@ -85,6 +85,26 @@ describe('resolvePilotEnv', () => {
     expect(merged.GOOGLE_REFRESH_TOKEN).toBe('env-wins-token');
   });
 
+  it('maps member-prefixed compose secret files into env keys', () => {
+    tempDir = mkdtempSync(join(tmpdir(), 'er-bridge-resolve-env-'));
+    writeComposeSecrets(tempDir, {
+      serhiy_google_refresh_token: 'prefixed-refresh-token',
+      serhiy_mailbox_app_password: 'mailbox-pw',
+      serhiy_google_client_id: 'gid-from-file',
+      serhiy_google_client_secret: 'gsecret-from-file',
+    });
+    const base = minimalEnv({
+      MAILBOX_APP_PASSWORD: undefined,
+      GOOGLE_CLIENT_ID: undefined,
+      GOOGLE_CLIENT_SECRET: undefined,
+      GOOGLE_REFRESH_TOKEN: undefined,
+    });
+    const provider = createComposeFileSecretProvider(tempDir);
+    const merged = resolvePilotEnv(base, provider);
+    expect(merged.GOOGLE_REFRESH_TOKEN).toBe('prefixed-refresh-token');
+    expect(merged.MAILBOX_APP_PASSWORD).toBe('mailbox-pw');
+  });
+
   it('maps all compose secret files into env keys', () => {
     tempDir = mkdtempSync(join(tmpdir(), 'er-bridge-resolve-env-'));
     writeComposeSecrets(tempDir, {

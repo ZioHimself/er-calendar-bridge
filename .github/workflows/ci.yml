@@ -90,8 +90,8 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "IMAGE=ghcr.io/europeanresolve/er-calendar-bridge:${VERSION}" >> "$GITHUB_ENV"
           cp .env.example .env
-          mkdir -p secrets/operator
+          mkdir -p secrets/serhiy
           for f in mailbox_app_password google_client_id google_client_secret google_refresh_token; do
-            printf 'ci-placeholder\n' > "secrets/operator/${f}"
+            printf 'ci-placeholder\n' > "secrets/serhiy/${f}"
           done
           docker compose config --quiet

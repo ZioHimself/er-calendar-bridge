@@ -2,11 +2,16 @@ node_modules/
 dist/
 .env
 .vitest/
-# Operator credential files (never commit). Track only docs/templates under secrets/operator/.
+# Member credential files (never commit). Track only docs/templates under secrets/<member>/.
 /secrets/**
 !/secrets/operator/
 /secrets/operator/*
 !/secrets/operator/.gitkeep
 !/secrets/operator/README.md
 !/secrets/operator/*.example
+!/secrets/serhiy/
+/secrets/serhiy/*
+!/secrets/serhiy/.gitkeep
+!/secrets/serhiy/README.md
+!/secrets/serhiy/*.example
 /data/

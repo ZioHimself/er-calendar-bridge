@@ -1,52 +1,52 @@
-# Pilot: one container per synced member (D-04). Copy bridge-operator block for additional members
-# with secrets under ./secrets/<member>/ and data at ./data/<member>.
+# Pilot: one container per synced member (D-04). Copy bridge-<member> block for additional members.
+# Compose secret *names* use a <member>_ prefix; files live under ./secrets/<member>/ (no prefix).
 services:
-  bridge-operator:
+  bridge-serhiy:
     image: ${IMAGE}
     restart: unless-stopped
     env_file: .env
     environment:
       DATA_DIR: /data
     volumes:
-      - ./data/operator:/data
+      - ./data/serhiy:/data
     secrets:
-      - mailbox_app_password
-      - google_client_id
-      - google_client_secret
-      - google_refresh_token
+      - serhiy_mailbox_app_password
+      - serhiy_google_client_id
+      - serhiy_google_client_secret
+      - serhiy_google_refresh_token
     # Image CMD is sync --watch (D-13); override only if the image lacks a default entrypoint.
     # command: ["node", "dist/index.js", "sync", "--watch"]
 
   # --- Additional member (copy-paste template, D-01) ---
-  # bridge-member2:
+  # bridge-alice:
   #   image: ${IMAGE}
   #   restart: unless-stopped
-  #   env_file: .env.member2
+  #   env_file: .env.alice
   #   environment:
   #     DATA_DIR: /data
   #   volumes:
-  #     - ./data/member2:/data
+  #     - ./data/alice:/data
   #   secrets:
-  #     - member2_mailbox_app_password
-  #     - member2_google_client_id
-  #     - member2_google_client_secret
-  #     - member2_google_refresh_token
+  #     - alice_mailbox_app_password
+  #     - alice_google_client_id
+  #     - alice_google_client_secret
+  #     - alice_google_refresh_token
 
 secrets:
-  mailbox_app_password:
-    file: ./secrets/operator/mailbox_app_password
-  google_client_id:
-    file: ./secrets/operator/google_client_id
-  google_client_secret:
-    file: ./secrets/operator/google_client_secret
-  google_refresh_token:
-    file: ./secrets/operator/google_refresh_token
+  serhiy_mailbox_app_password:
+    file: ./secrets/serhiy/mailbox_app_password
+  serhiy_google_client_id:
+    file: ./secrets/serhiy/google_client_id
+  serhiy_google_client_secret:
+    file: ./secrets/serhiy/google_client_secret
+  serhiy_google_refresh_token:
+    file: ./secrets/serhiy/google_refresh_token
 
-  # member2_mailbox_app_password:
-  #   file: ./secrets/member2/mailbox_app_password
-  # member2_google_client_id:
-  #   file: ./secrets/member2/google_client_id
-  # member2_google_client_secret:
-  #   file: ./secrets/member2/google_client_secret
-  # member2_google_refresh_token:
-  #   file: ./secrets/member2/google_refresh_token
+  # alice_mailbox_app_password:
+  #   file: ./secrets/alice/mailbox_app_password
+  # alice_google_client_id:
+  #   file: ./secrets/alice/google_client_id
+  # alice_google_client_secret:
+  #   file: ./secrets/alice/google_client_secret
+  # alice_google_refresh_token:
+  #   file: ./secrets/alice/google_refresh_token
