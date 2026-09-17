@@ -41,7 +41,7 @@ Docker image from **public GHCR**, orchestrated with Docker Compose — one cont
 
 **Operator runbooks:**
 
-- [Docker pilot, migration, Google re-auth](docs/runbooks/docker-pilot.md) — `IMAGE=ghcr.io/europeanresolve/er-calendar-bridge:0.1.4`, `secrets/serhiy/*`, `docker compose up -d`
+- [Docker pilot, migration, Google re-auth](docs/runbooks/docker-pilot.md) — `IMAGE=ghcr.io/europeanresolve/er-calendar-bridge:0.1.5`, `secrets/serhiy/*`, `docker compose up -d`
 - [Offboarding (SYNC-18)](docs/runbooks/offboarding.md) — revoke credentials, `compose down`, optional `bridge.db` backup
 
 Secrets: Compose file mounts under `secrets/<member>/` for v1.0 (gitignored). **Vault / OpenBao** is the target for server-era deployments (documented follow-up, D-23).
@@ -50,7 +50,7 @@ Secrets: Compose file mounts under `secrets/<member>/` for v1.0 (gitignored). **
 
 This project uses trunk-based development: push directly to `main`. Pull requests are not required for now, though CI also runs on `pull_request` targeting `main` when used.
 
-GitHub Actions runs on every push to `main` and on pull requests targeting `main` with **five** jobs: `test`, `lint`, `typecheck`, `build`, and **`docker-build`**. The image job runs after the four npm jobs succeed; it builds on every workflow run and **pushes to public GHCR** only on pushes to `main` (semver tag from `package.json`, currently `0.1.4`).
+GitHub Actions runs on every push to `main` and on pull requests targeting `main` with **five** jobs: `test`, `lint`, `typecheck`, `build`, and **`docker-build`**. The image job runs after the four npm jobs succeed; it builds on every workflow run and **pushes to public GHCR** only on pushes to `main` (semver tag from `package.json`, currently `0.1.5`).
 
 If you enable **branch protection** on `main`, mark all five jobs — including **`docker-build`** — as required status checks so trunk commits cannot merge with a broken image (D-19). Direct pushes to `main` still rely on CI going green before you push.
 

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { DAVClient } from 'tsdav';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { createCalDavReader } from '../../src/adapters/caldav/reader.js';
 import { openMappingStore } from '../../src/store/mapping-store.js';
@@ -48,8 +49,14 @@ describe('createCalDavReader', () => {
       },
     });
 
+    const client = {
+      smartCollectionSyncDetailed,
+      fetchCalendarObjects: vi.fn(),
+      calendarMultiGet: vi.fn(),
+    } as unknown as DAVClient;
+
     const reader = createCalDavReader({
-      client: { smartCollectionSyncDetailed },
+      client,
       calendarUrl: CALENDAR_URL,
       mappingStore,
       syncStateStore,
@@ -72,7 +79,11 @@ describe('createCalDavReader', () => {
     expect(state?.ctag).toBe('ctag-1');
 
     expect(smartCollectionSyncDetailed).toHaveBeenCalledWith({
-      collection: expect.objectContaining({ url: CALENDAR_URL }),
+      collection: expect.objectContaining({
+        url: CALENDAR_URL,
+        fetchObjects: expect.any(Function),
+        objectMultiGet: expect.any(Function),
+      }),
       method: 'basic',
     });
   });
@@ -104,7 +115,11 @@ describe('createCalDavReader', () => {
     });
 
     const reader = createCalDavReader({
-      client: { smartCollectionSyncDetailed },
+      client: {
+        smartCollectionSyncDetailed,
+        fetchCalendarObjects: vi.fn(),
+        calendarMultiGet: vi.fn(),
+      } as unknown as DAVClient,
       calendarUrl: CALENDAR_URL,
       mappingStore,
       syncStateStore,
@@ -139,7 +154,11 @@ describe('createCalDavReader', () => {
     });
 
     const reader = createCalDavReader({
-      client: { smartCollectionSyncDetailed },
+      client: {
+        smartCollectionSyncDetailed,
+        fetchCalendarObjects: vi.fn(),
+        calendarMultiGet: vi.fn(),
+      } as unknown as DAVClient,
       calendarUrl: CALENDAR_URL,
       mappingStore,
       syncStateStore,

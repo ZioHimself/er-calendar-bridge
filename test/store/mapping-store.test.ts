@@ -120,4 +120,22 @@ describe('openMappingStore', () => {
     expect(store.resolveUidByHref(href)).toBe('href-uid@example');
     expect(store.resolveUidByHref('https://other/unknown.ics')).toBeUndefined();
   });
+
+  it('listHrefSnapshots and deleteHrefSnapshot maintain basic-sync object cache', () => {
+    store = memoryStore();
+    const href = 'https://dav.mailbox.org/caldav/user/event.ics';
+
+    store.upsertHrefSnapshot({
+      href,
+      sourceUid: 'uid@example',
+      etag: 'etag-1',
+    });
+
+    expect(store.listHrefSnapshots()).toEqual([{ href, etag: 'etag-1' }]);
+
+    store.deleteHrefSnapshot(href);
+
+    expect(store.listHrefSnapshots()).toEqual([]);
+    expect(store.resolveUidByHref(href)).toBeUndefined();
+  });
 });

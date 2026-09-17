@@ -1,3 +1,4 @@
+import type { DAVClient } from 'tsdav';
 import type { MappingStore } from '../../store/mapping-store.js';
 import type { SyncStateStore } from '../../store/sync-state-store.js';
 import type { CalDavReader, Logger, SyncDelta } from '../../sync/types.js';
@@ -11,25 +12,52 @@ export interface CalDavObjectRef {
   etag?: string;
 }
 
-export interface CalDavSyncClient {
-  smartCollectionSyncDetailed<T extends { url: string; syncToken?: string; ctag?: string }>(
-    param: {
-      collection: T;
-      method?: 'basic' | 'webdav';
-    },
-  ): Promise<{
-    syncToken?: string;
-    ctag?: string;
-    objects: {
-      created: CalDavObjectRef[];
-      updated: CalDavObjectRef[];
-      deleted: CalDavObjectRef[];
-    };
-  }>;
-}
+type CalDavCollection = {
+  url: string;
+  syncToken?: string;
+  ctag?: string;
+  objects?: CalDavObjectRef[];
+};
 
 function syncMethodForDegradedMode(mode: string): 'basic' | 'webdav' {
   return mode === 'webdav_sync' ? 'webdav' : 'basic';
+}
+
+function buildCalDavCollection(
+  client: DAVClient,
+  params: {
+    calendarUrl: string;
+    syncToken?: string;
+    ctag?: string;
+    objects: CalDavObjectRef[];
+  },
+) {
+  const collection: CalDavCollection = {
+    url: params.calendarUrl,
+    syncToken: params.syncToken,
+    ctag: params.ctag,
+    objects: params.objects,
+  };
+
+  return {
+    ...collection,
+    fetchObjects: async (fetchParams?: {
+      collection: { url: string };
+      headers?: Record<string, string>;
+      fetchOptions?: RequestInit;
+    }) => {
+      if (!fetchParams) {
+        return [];
+      }
+      const { collection: remoteCollection, ...requestParams } = fetchParams;
+      return client.fetchCalendarObjects({
+        ...requestParams,
+        calendar: remoteCollection,
+      });
+    },
+    objectMultiGet: (multiGetParams: Parameters<DAVClient['calendarMultiGet']>[0]) =>
+      client.calendarMultiGet(multiGetParams),
+  };
 }
 
 function icsPayload(data: unknown): string {
@@ -49,7 +77,7 @@ export function extractUidFromIcs(ics: string): string | undefined {
 }
 
 export function createCalDavReader(deps: {
-  client: CalDavSyncClient;
+  client: DAVClient;
   calendarUrl: string;
   syncStateStore: SyncStateStore;
   mappingStore: MappingStore;
@@ -71,12 +99,16 @@ export function createCalDavReader(deps: {
         deps.log?.info({ degradedMode }, 'CalDAV poll using degraded sync mode');
       }
 
-      const collection = {
-        url: deps.calendarUrl,
+      const localObjects: CalDavObjectRef[] = deps.mappingStore
+        .listHrefSnapshots()
+        .map((row) => ({ url: row.href, etag: row.etag }));
+
+      const collection = buildCalDavCollection(deps.client, {
+        calendarUrl: deps.calendarUrl,
         syncToken: prior?.syncToken,
         ctag: prior?.ctag,
-        objects: [] as CalDavObjectRef[],
-      };
+        objects: localObjects,
+      });
 
       const result = await deps.client.smartCollectionSyncDetailed({
         collection,
@@ -111,6 +143,7 @@ export function createCalDavReader(deps: {
           continue;
         }
         const uid = deps.mappingStore.resolveUidByHref(obj.url);
+        deps.mappingStore.deleteHrefSnapshot(obj.url);
         if (uid) {
           deleted.push({ href: obj.url, uid });
         }

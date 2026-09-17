@@ -45,6 +45,8 @@ export interface MappingStore {
     etag?: string;
   }): void;
   resolveUidByHref(href: string): string | undefined;
+  listHrefSnapshots(): Array<{ href: string; etag?: string }>;
+  deleteHrefSnapshot(href: string): void;
   close(): void;
 }
 
@@ -146,6 +148,14 @@ export function openMappingStore(sqlitePath: string): MappingStore {
     SELECT source_uid FROM source_href_snapshot WHERE href = ?
   `);
 
+  const listHrefSnapshotsStmt = db.prepare(`
+    SELECT href, etag FROM source_href_snapshot
+  `);
+
+  const deleteHrefStmt = db.prepare(`
+    DELETE FROM source_href_snapshot WHERE href = ?
+  `);
+
   const upsertTransaction = db.transaction(
     (params: {
       uid: string;
@@ -215,6 +225,21 @@ export function openMappingStore(sqlitePath: string): MappingStore {
     resolveUidByHref(href) {
       const row = resolveHrefStmt.get(href) as { source_uid: string } | undefined;
       return row?.source_uid;
+    },
+
+    listHrefSnapshots() {
+      const rows = listHrefSnapshotsStmt.all() as Array<{
+        href: string;
+        etag: string | null;
+      }>;
+      return rows.map((row) => ({
+        href: row.href,
+        etag: row.etag ?? undefined,
+      }));
+    },
+
+    deleteHrefSnapshot(href) {
+      deleteHrefStmt.run(href);
     },
 
     close() {
