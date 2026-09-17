@@ -20,25 +20,25 @@ Do **not** bake credentials into the image or commit secret files. Use gitignore
 
 ---
 
-## Onboarding (single operator member)
+## Onboarding (serhiy pilot)
 
-### 1. Clone and configure non-secrets
+One **Compose service** = one `MAILBOX_CALENDAR_URL` → one `GOOGLE_CALENDAR_ID`. Extra calendars: duplicate the service block in `compose.yaml` with another `.env.bridge-serhiy-*` file (shared `secrets/serhiy/`).
+
+### 1. Configure env files
 
 ```bash
 cp .env.example .env
+cp .env.bridge-serhiy-personal.example .env.bridge-serhiy-personal
 ```
 
-Edit `.env`:
+- **`.env`** (repo root): **`IMAGE=...`** — Compose `${IMAGE}` substitution.
+- **`.env.bridge-serhiy-personal`**: `MAILBOX_CALENDAR_URL`, `GOOGLE_CALENDAR_ID`, `MAILBOX_USERNAME`, optional SMTP / notify, `SYNC_INTERVAL_SECONDS` (D-13).
 
-- Set **`IMAGE=ghcr.io/europeanresolve/er-calendar-bridge:0.1.3`** (stable semver tag from CI; bump when you intentionally upgrade).
-- Fill mailbox.org URLs, `MAILBOX_USERNAME`, `GOOGLE_CALENDAR_ID`, optional SMTP / notify settings.
-- Tune **`SYNC_INTERVAL_SECONDS`** (default `300`) for watch polling (D-13).
-
-Secrets (`MAILBOX_APP_PASSWORD`, Google client id/secret, refresh token) are **not** set in `.env` for Compose pilot — they come from secret files (D-01, D-02).
+Credentials stay in **`secrets/serhiy/`**, not in env files (D-01, D-02).
 
 ### 2. Create secret files
 
-Create one file per credential under `secrets/operator/` (see [secrets/operator/README.md](../../secrets/operator/README.md)):
+Create one file per credential under `secrets/serhiy/` (see [secrets/serhiy/README.md](../../secrets/serhiy/README.md)):
 
 | File | Purpose |
 |------|---------|
@@ -54,10 +54,10 @@ Optional withhold email: add `smtp_password` and use `compose.notify.yaml` when 
 ### 3. Persistent data directory
 
 ```bash
-mkdir -p data/operator
+mkdir -p data/serhiy-personal
 ```
 
-SQLite and sync state live on the host at `./data/operator` → container `DATA_DIR=/data` (bind mount, D-10).
+SQLite and sync state: `./data/serhiy-personal` → container `DATA_DIR=/data` (D-10).
 
 ### 4. Pull image and start stack
 
@@ -71,7 +71,7 @@ Default container command is **`sync --watch`** (D-13). No `ports:` are publishe
 Verify logs (structured JSON on stdout, D-15):
 
 ```bash
-docker logs -f bridge-operator
+docker logs -f "$(docker compose ps -q bridge-serhiy-personal)"
 ```
 
 ---

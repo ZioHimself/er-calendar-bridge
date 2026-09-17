@@ -1,36 +1,26 @@
-# Pilot: one container per synced member (D-04). Copy bridge-<member> block for additional members.
-# Compose secret *names* use a <member>_ prefix; files live under ./secrets/<member>/ (no prefix).
+# One service = one MAILBOX_CALENDAR_URL + GOOGLE_CALENDAR_ID (see env_file).
+# Credentials: secrets/serhiy/* (Compose secret names use serhiy_ prefix).
 services:
-  bridge-serhiy:
+  bridge-serhiy-personal:
     image: ${IMAGE}
     restart: unless-stopped
-    env_file: .env
+    env_file: .env.bridge-serhiy-personal
     environment:
       DATA_DIR: /data
     volumes:
-      - ./data/serhiy:/data
+      - ./data/serhiy-personal:/data
     secrets:
       - serhiy_mailbox_app_password
       - serhiy_google_client_id
       - serhiy_google_client_secret
       - serhiy_google_refresh_token
-    # Image CMD is sync --watch (D-13); override only if the image lacks a default entrypoint.
-    # command: ["node", "dist/index.js", "sync", "--watch"]
 
-  # --- Additional member (copy-paste template, D-01) ---
-  # bridge-alice:
-  #   image: ${IMAGE}
-  #   restart: unless-stopped
-  #   env_file: .env.alice
-  #   environment:
-  #     DATA_DIR: /data
+  # --- More calendars: copy this service block, new env_file + data volume (D-04) ---
+  # bridge-serhiy-work:
+  #   env_file: .env.bridge-serhiy-work
   #   volumes:
-  #     - ./data/alice:/data
-  #   secrets:
-  #     - alice_mailbox_app_password
-  #     - alice_google_client_id
-  #     - alice_google_client_secret
-  #     - alice_google_refresh_token
+  #     - ./data/serhiy-work:/data
+  #   secrets: [serhiy_mailbox_app_password, ...]
 
 secrets:
   serhiy_mailbox_app_password:
@@ -41,12 +31,3 @@ secrets:
     file: ./secrets/serhiy/google_client_secret
   serhiy_google_refresh_token:
     file: ./secrets/serhiy/google_refresh_token
-
-  # alice_mailbox_app_password:
-  #   file: ./secrets/alice/mailbox_app_password
-  # alice_google_client_id:
-  #   file: ./secrets/alice/google_client_id
-  # alice_google_client_secret:
-  #   file: ./secrets/alice/google_client_secret
-  # alice_google_refresh_token:
-  #   file: ./secrets/alice/google_refresh_token

@@ -4,7 +4,7 @@ Create **one file per credential** in this directory (short filenames, **no** `s
 
 Compose mounts them as **`serhiy_<file>`** secret names (see `compose.yaml`). The app maps `*_<base>` mount names to env vars via `COMPOSE_SECRET_TO_ENV` in `src/secrets/resolve-env.ts`.
 
-Used by service **`bridge-serhiy`** and bind mount **`./data/serhiy`**.
+Used by **`bridge-serhiy-personal`** (`.env.bridge-serhiy-personal`, `./data/serhiy-personal`). Add more services in `compose.yaml` for extra calendars; secrets can stay shared for the same mailbox/Google OAuth client.
 
 ## Required for `docker compose up` (base `compose.yaml`)
 
@@ -36,5 +36,5 @@ Add:
 Re-authenticate on the host (CLI outside the container), then update `google_refresh_token` and restart:
 
 ```bash
-docker compose restart bridge-serhiy
+docker compose restart bridge-serhiy-personal
 ```
