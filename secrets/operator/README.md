@@ -1,6 +1,6 @@
 # Operator secrets (pilot)
 
-Create **one file per credential** in this directory. Filenames must match Docker Compose secret names and `COMPOSE_SECRET_TO_ENV` in `src/secrets/resolve-env.ts`. Files are **gitignored** — never commit real values.
+Create **one file per credential** in this directory. Filenames must match Docker Compose secret names and `COMPOSE_SECRET_TO_ENV` in `src/secrets/resolve-env.ts`. Copy from the matching `*.example` file (remove `.example`, add your value). Real credential files are **gitignored** — never commit them.
 
 ## Required for `docker compose up` (base `compose.yaml`)
 

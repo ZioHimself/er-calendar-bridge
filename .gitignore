@@ -6,4 +6,5 @@ dist/
 !/secrets/operator/
 !/secrets/operator/.gitkeep
 !/secrets/operator/README.md
+!/secrets/operator/*.example
 /data/
